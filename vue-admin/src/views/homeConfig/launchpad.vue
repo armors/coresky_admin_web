@@ -34,8 +34,6 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageNum" :limit.sync="queryParams.pageSize"
-      @pagination="getList" />
     <el-dialog title="发射日历区配置" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="120px" size="small" style="margin-right:45px">
         <el-form-item label="项目名称" prop="areaNm">
@@ -43,7 +41,7 @@
         </el-form-item>
         <el-form-item label="项目封面" prop="areaNm">
           <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/"
-            :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+            :show-file-list="false">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
@@ -111,6 +109,7 @@ export default {
       form: {
 
       },
+      imageUrl: "",
       // 表单校验
       rules: {
 

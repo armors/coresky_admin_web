@@ -47,3 +47,9 @@ export const roleGetpermissions = (data) => request.post("/admin/role/getpermiss
 
 
 export const logList = (data) => request.post("/admin/log/list", data);
+
+
+export const advList = (data) => request.post("/admin/adv/list", data);
+export const advCreate = (data) => request.post("/admin/adv/create", data);
+export const advDelete = (data) => request.post("/admin/adv/delete", data);
+export const advUpdate = (data) => request.post("/admin/adv/update", data);
