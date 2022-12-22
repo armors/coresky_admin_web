@@ -15,7 +15,7 @@
       <el-table-column label="合约地址" align="center" prop="contract" />
       <el-table-column label="图片" align="center">
         <template #default="scope">
-          <img class="miniImg" :src="scope.row.url" alt="">
+          <img class="miniImg" :src="scope.row.image" alt="">
         </template>
       </el-table-column>
       <el-table-column label="权重" align="center" prop="weight" />
@@ -123,7 +123,7 @@ export default {
     uploadSuccess (res) {
       this.successUploadHandle()
       if (res.errno === 0) {
-        this.form.image = res.data.url
+        this.form.image = this.IMG_URL + res.data.url;
         this.$modal.msgSuccess('上传成功')
       } else {
         this.$modal.msgError(res.msg || "上传失败!");

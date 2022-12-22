@@ -21,12 +21,13 @@ export default {
   data() {
     return {
       STATIC_URL: process.env.VUE_APP_STATIC_URL,
+      IMG_URL: process.env.VUE_APP_IMG_URL,
       fullscreenLoading: undefined,
     };
   },
-  mounted() {},
+  mounted() { },
   methods: {
-    goBack(path) {},
+    goBack(path) { },
     beforeUpload() {
       this.fullscreenLoading = this.$loading({
         lock: true,

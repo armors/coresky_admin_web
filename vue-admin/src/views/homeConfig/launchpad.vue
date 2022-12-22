@@ -14,7 +14,7 @@
       <el-table-column label="项目名称" align="center" prop="deptNm" />
       <el-table-column label="项目封面" align="center" prop="byRatio">
         <template slot-scope="scope">
-          <img src="" alt="">
+          <img class="miniImg" :src="scope.row.image" alt="">
         </template>
       </el-table-column>
       <el-table-column label="发射时间" align="center" prop="deptNm" />

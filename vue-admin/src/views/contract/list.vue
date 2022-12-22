@@ -2,40 +2,111 @@
   <div class="app-container">
     <el-row :gutter="10" class="mb15">
       <el-col :span="1.5">
-        <el-button v-permission="['POST /admin/contract/create']" type="primary" plain icon="el-icon-plus" size="mini"
-          @click="handleCreate">{{ $t("global.create") }}</el-button>
+        <el-button
+          v-permission="['POST /admin/contract/create']"
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleCreate"
+          >{{ $t("global.create") }}</el-button
+        >
       </el-col>
     </el-row>
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('global.loadingText')" border
-      highlight-current-row>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      :element-loading-text="$t('global.loadingText')"
+      border
+      highlight-current-row
+    >
       <el-table-column align="center" label="Id" prop="id" width="70" />
-      <el-table-column align="center" :label="$t('contract.name')" prop="name" :show-overflow-tooltip="true"
-        width="100" />
-      <el-table-column align="center" :label="$t('contract.symbol')" prop="symbol" :show-overflow-tooltip="true"
-        width="100" />
-      <el-table-column align="center" :label="$t('contract.image')" prop="image" width="120">
+      <el-table-column
+        align="center"
+        :label="$t('contract.name')"
+        prop="name"
+        :show-overflow-tooltip="true"
+        width="100"
+      />
+      <el-table-column
+        align="center"
+        :label="$t('contract.symbol')"
+        prop="symbol"
+        :show-overflow-tooltip="true"
+        width="100"
+      />
+      <el-table-column
+        align="center"
+        :label="$t('contract.image')"
+        prop="image"
+        width="120"
+      >
         <template #default="scope">
-          <media v-if="scope.row.image" :url="scope.row.image" type="image" :isPreview="true"></media>
+          <media
+            v-if="scope.row.image"
+            :url="scope.row.image"
+            type="image"
+            :isPreview="true"
+          ></media>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('contract.address')" prop="contract" />
-      <el-table-column align="center" :label="$t('contract.owner')" prop="owner" />
-      <el-table-column align="center" :label="$t('global.operation')" width="120"
-        class-name="small-padding fixed-width">
+      <el-table-column
+        align="center"
+        :label="$t('contract.address')"
+        prop="contract"
+      />
+      <el-table-column
+        align="center"
+        :label="$t('contract.owner')"
+        prop="owner"
+      />
+      <el-table-column
+        align="center"
+        :label="$t('global.operation')"
+        width="120"
+        class-name="small-padding fixed-width"
+      >
         <template #default="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)"
-            v-permission="['POST /admin/contract/update']">{{ $t("global.edit") }}</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)" v-if="!scope.row.deleted"
-            v-permission="['POST /admin/contract/delete']">{{ $t("global.delete") }}</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleUpdate(scope.row)"
+            v-permission="['POST /admin/contract/update']"
+            >{{ $t("global.edit") }}</el-button
+          >
+          <el-button
+            type="danger"
+            size="mini"
+            @click="handleDelete(scope.row)"
+            v-if="!scope.row.deleted"
+            v-permission="['POST /admin/contract/delete']"
+            >{{ $t("global.delete") }}</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
-      @pagination="getList" />
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="900px" append-to-body>
-      <el-form ref="dataForm" :rules="rules" :model="dataForm" label-width="120px" style="margin-right:40px">
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+      width="900px"
+      append-to-body
+    >
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="dataForm"
+        label-width="120px"
+        style="margin-right: 40px"
+      >
         <el-form-item :label="$t('contract.name')" prop="name">
           <el-input v-model="dataForm.name" />
         </el-form-item>
@@ -49,14 +120,31 @@
           <el-input type="textarea" v-model="dataForm.info" />
         </el-form-item>
         <el-form-item :label="$t('contract.category')">
-          <el-select v-model="dataForm.cid" class="filter-item w-200 mr-10" :placeholder="$t('contract.category')">
-            <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id" />
+          <el-select
+            v-model="dataForm.cid"
+            class="filter-item w-200 mr-10"
+            :placeholder="$t('contract.category')"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('contract.contractType')">
-          <el-select v-model="dataForm.contractType" class="filter-item w-200 mr-10"
-            :placeholder="$t('contract.contractType')">
-            <el-option v-for="item in contractType" :key="item.value" :label="item.label" :value="item.value" />
+          <el-select
+            v-model="dataForm.contractType"
+            class="filter-item w-200 mr-10"
+            :placeholder="$t('contract.contractType')"
+          >
+            <el-option
+              v-for="item in contractType"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('contract.address')" prop="contract">
@@ -69,8 +157,14 @@
           <el-input v-model="dataForm.owner" />
         </el-form-item>
         <el-form-item :label="$t('contract.bannerImage')" prop="bannerImage">
-          <upload-unit v-if="dialogFormVisible" :refName="'contractRef'" :limitNum="1" :imageData="dataForm.bannerImage"
-            :uploadStatus="dialogStatus == 'create' || dialogStatus == 'update'" @updateData="updateCover">
+          <upload-unit
+            v-if="dialogFormVisible"
+            :refName="'contractRef'"
+            :limitNum="1"
+            :imageData="dataForm.bannerImage"
+            :uploadStatus="dialogStatus == 'create' || dialogStatus == 'update'"
+            @updateData="updateCover"
+          >
           </upload-unit>
         </el-form-item>
         <el-form-item :label="$t('contract.feeContract')" prop="feeContract">
@@ -95,7 +189,11 @@
       <template #footer>
         <div class="dialog-footer" v-if="dialogStatus != 'detail'">
           <el-button @click="dialogCancel">{{ $t("global.cancel") }}</el-button>
-          <el-button v-if="dialogStatus == 'create'" type="primary" @click="onCreate">{{ $t("global.confirm") }}
+          <el-button
+            v-if="dialogStatus == 'create'"
+            type="primary"
+            @click="onCreate"
+            >{{ $t("global.confirm") }}
           </el-button>
           <el-button v-else type="primary" @click="onUpdate">{{
             $t("global.confirm")
@@ -108,12 +206,21 @@
 
 <script>
 // import Media from "@/components/Media";
+import base from "@/mixins/base";
 import UploadUnit from "@/components/Upload.vue";
-import { categoryList, contractList, contractCreate, contractUpdate, contractDelete, storageCreate } from '@/api/common'
+import {
+  categoryList,
+  contractList,
+  contractCreate,
+  contractUpdate,
+  contractDelete,
+  storageCreate,
+} from "@/api/common";
 
 export default {
   components: { UploadUnit },
-  data () {
+  mixins: [base],
+  data() {
     return {
       list: null,
       total: 0,
@@ -179,12 +286,12 @@ export default {
       filelist: [],
     };
   },
-  created () {
+  created() {
     this.getList();
     this.getCateList();
   },
   methods: {
-    getCateList () {
+    getCateList() {
       categoryList(this.listQuery)
         .then((res) => {
           this.options = res.data.list;
@@ -193,14 +300,14 @@ export default {
           this.list = [];
         });
     },
-    updateCover (file) {
+    updateCover(file) {
       this.fileImage = file;
       this.dataForm.cover = file;
     },
-    dialogCancel () {
+    dialogCancel() {
       this.dialogFormVisible = false;
     },
-    uploadChange (file) {
+    uploadChange(file) {
       var event = event || window.event;
       var files = event.target.files[0];
       var reader = new FileReader();
@@ -214,7 +321,7 @@ export default {
       };
       reader.readAsDataURL(files);
     },
-    getList () {
+    getList() {
       this.listLoading = true;
       contractList(this.listQuery)
         .then((res) => {
@@ -227,14 +334,14 @@ export default {
           this.listLoading = false;
         });
     },
-    handleFilter () {
+    handleFilter() {
       this.listQuery.page = 1;
       this.getList();
     },
-    resetForm () {
+    resetForm() {
       this.dataForm = {};
     },
-    handleCreate () {
+    handleCreate() {
       this.resetForm();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
@@ -242,7 +349,7 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
-    onCreate () {
+    onCreate() {
       var _this = this;
       this.$refs["dataForm"].validate(async function (valid) {
         if (valid) {
@@ -262,11 +369,11 @@ export default {
         }
       });
     },
-    createData (response) {
+    createData(response) {
       var data = Object.assign({}, this.dataForm);
       data.isAdmin = !data.isAdmin ? 0 : 1;
       if (response) {
-        data.bannerImage = response.data.url;
+        data.bannerImage = this.IMG_URL + response.data.url;
       }
       contractCreate(data)
         .then((res) => {
@@ -284,7 +391,7 @@ export default {
           });
         });
     },
-    handleUpdate (row) {
+    handleUpdate(row) {
       this.dataForm = Object.assign({}, row);
       this.dataForm.isDefault = this.dataForm.isDefault == 1 ? true : false;
       this.dialogStatus = "update";
@@ -293,7 +400,7 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
-    onUpdate () {
+    onUpdate() {
       var _this = this;
       this.$refs["dataForm"].validate(async function (valid) {
         if (valid) {
@@ -312,7 +419,7 @@ export default {
         }
       });
     },
-    async uploadFile () {
+    async uploadFile() {
       return new Promise((resolve) => {
         let formData = new FormData();
         formData.append("file", this.fileImage);
@@ -321,10 +428,12 @@ export default {
         });
       });
     },
-    async updateData (response) {
+    async updateData(response) {
       var data = Object.assign({}, this.dataForm, {
         id: this.dataForm.id,
-        bannerImage: response ? response.data.url : this.dataForm.cover,
+        bannerImage: response
+          ? this.IMG_URL + response.data.url
+          : this.dataForm.cover,
         isAdmin: !this.dataForm.isAdmin ? 0 : 1,
       });
       contractUpdate(data)
@@ -343,7 +452,7 @@ export default {
           });
         });
     },
-    handleDelete (row) {
+    handleDelete(row) {
       this.$confirm(this.$t("global.deleteTip"), this.$t("global.tip"), {
         confirmButtonText: this.$t("global.confirm"),
         cancelButtonText: this.$t("global.cancel"),
@@ -365,7 +474,7 @@ export default {
               });
             });
         })
-        .catch(() => { });
+        .catch(() => {});
     },
   },
 };
