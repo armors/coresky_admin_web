@@ -53,3 +53,18 @@ export const advList = (data) => request.post("/admin/adv/list", data);
 export const advCreate = (data) => request.post("/admin/adv/create", data);
 export const advDelete = (data) => request.post("/admin/adv/delete", data);
 export const advUpdate = (data) => request.post("/admin/adv/update", data);
+
+
+export const launchpadCreate = (data) => request.post("/admin/launchpad/create", data);
+export const launchpadUpdate = (data) => request.post("/admin/launchpad/update", data);
+export const launchpadList = (data) => request.post("/admin/launchpad/list", data);
+export const launchpadUpdateStatus = (data) => request.post("/admin/launchpad/updateStatus", data);
+export const launchpadBetresult = (data) => request.post("/admin/launchpad/betresult", data);
+export const launchpadInfo = (data) => request.post("/admin/launchpad/launchpadinfo", data);
+export const launchpadBetList = (data) => request.post("/admin/launchpad/betlist", data);
+export const launchpadChangeStatus = (data) => request.post("/admin/launchpad/changeStatus", data);
+
+
+export const userAirDrop = (data) => request.post("/admin/user/airDrop", data);
+
+

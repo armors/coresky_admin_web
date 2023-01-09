@@ -8,27 +8,38 @@ export default {
       nickName: (state) => state.user.userInfo.nickName,
     }),
 
-    uploadAction() {
+    uploadAction () {
       return process.env.VUE_APP_BASE_API + `/admin/storage/create`;
     },
-    uploadHeaders() {
+    uploadHeaders () {
       return {
-        Authorization: "Bearer " + getToken(),
-        AuthorizationTk: "Bearer " + getToken(),
+        // Authorization: "Bearer " + getToken(),
+        // AuthorizationTk: "Bearer " + getToken(),
       };
     },
   },
-  data() {
+  data () {
     return {
       STATIC_URL: process.env.VUE_APP_STATIC_URL,
       IMG_URL: process.env.VUE_APP_IMG_URL,
       fullscreenLoading: undefined,
     };
   },
-  mounted() { },
+  mounted () { },
   methods: {
-    goBack(path) { },
-    beforeUpload() {
+    cancel (path) {
+      const obj = { path };
+      if (this.$route.query.isclose === "1") {
+        this.$tab.closePage();
+      } else {
+        if (path) {
+          this.$tab.closeOpenPage(obj);
+        } else {
+          this.$tab.closePage();
+        }
+      }
+    },
+    beforeUpload () {
       this.fullscreenLoading = this.$loading({
         lock: true,
         text: "文件上传中",
@@ -37,7 +48,7 @@ export default {
       });
       return;
     },
-    successUploadHandle() {
+    successUploadHandle () {
       if (this.fullscreenLoading) {
         this.fullscreenLoading.close();
       }

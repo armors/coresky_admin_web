@@ -1,10 +1,10 @@
 /**
  * 限制输入框只能输入n为小数
  */
- export const inputLimt = {
-  bind(el, binding) {
-    var wins_0 = /[^\d]/g //整数判断
-    var wins_1 = /[^\d^\.]/g //小数判断
+export const inputLimt = {
+  bind (el, binding) {
+    var wins_0 = /[^\-?\d]/g //整数判断
+    var wins_1 = /[^\-?\d^\.]/g //小数判断
     var flag = true;
     var points = 0;
     var lengths = 0
@@ -47,7 +47,7 @@
               if (!no_int) {
                 e.target.value = e.target.value.replace(wins_1, "").replace('.', '$#$').replace(/\./g, '').replace(
                   '$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').substring(0, e.target.value.indexOf(
-                  ".") + 2)
+                    ".") + 2)
               } else {
                 e.target.value = e.target.value.replace(wins_0, "")
               }
@@ -75,7 +75,36 @@
               if (!no_int) {
                 e.target.value = e.target.value.replace(wins_1, "").replace('.', '$#$').replace(/\./g, '').replace(
                   '$#$', '.').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3').substring(0, e.target.value.indexOf(
-                  ".") + 3)
+                    ".") + 3)
+              } else {
+                e.target.value = e.target.value.replace(wins_0, "")
+              }
+              e.target.dispatchEvent(new Event("input"))
+            }
+          }
+          if (binding.value > 2) {
+            if (wins_0.test(e.target.value.toString().replace(/\d+\.(\d*)/, '$1'))) {
+              remainder = true
+            }
+            if ((e.target.value.split('.')).length - 1 > 1) {
+              points = true
+            }
+            if (e.target.value.toString().split(".")[1] != undefined) {
+              if (e.target.value.toString().split(".")[1].length > binding.value) {
+                lengths = true
+              }
+              else {
+                lengths = false
+              }
+            }
+            if (e.target.value.toString().indexOf(".") != -1) {
+              no_int = false
+            } else {
+              no_int = true
+            }
+            if (wins_1.test(e.target.value) || lengths || points || remainder) {
+              if (!no_int) {
+                e.target.value = e.target.value.replace(wins_1, "").replace('.', '$#$').replace(/\./g, '').replace('$#$', '.').replace(`/^(\-)*(\d+)\.(\d{${binding.value}}).*$/`, '$1$2.$3').substring(0, e.target.value.indexOf(".") + (binding.value + 1))
               } else {
                 e.target.value = e.target.value.replace(wins_0, "")
               }
