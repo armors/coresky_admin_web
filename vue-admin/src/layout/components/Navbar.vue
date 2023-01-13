@@ -1,12 +1,16 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container"
-      @toggleClick="toggleSideBar" />
+    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" v-if="!topNav" />
     <top-nav id="topmenu-container" class="topmenu-container" v-if="topNav" />
 
     <div class="right-menu">
+      <el-link v-if="!connected" type="info" :underline="false" class="avatar-container right-menu-item" @click="connectWallet">
+        {{ $t("navbar.connectWallet") }}</el-link>
+      <span class="avatar-container right-menu-item profileClass" v-else>
+        {{ $tool.ellipsisAddress(web3.coinbase) }}
+      </span>
       <template v-if="device!=='mobile'">
         <!-- <search id="header-search" class="right-menu-item" /> -->
 
@@ -101,7 +105,9 @@ export default {
     },
     ...mapState({
       userId: state => state.user.userInfo.userId,
-      nickName: state => state.user.userInfo.name
+      nickName: state => state.user.userInfo.name,
+      connected: (state) => state.network.connected,
+      web3: (state) => state.network.web3,
     }),
     ...mapGetters([
       'sidebar',
@@ -126,6 +132,9 @@ export default {
     }
   },
   methods: {
+    connectWallet () {
+      this.$store.dispatch("connect").then(() => { });
+    },
     toggleSideBar () {
       this.$store.dispatch('app/toggleSideBar')
     },

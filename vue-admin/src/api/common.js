@@ -63,6 +63,7 @@ export const launchpadBetresult = (data) => request.post("/admin/launchpad/betre
 export const launchpadInfo = (data) => request.post("/admin/launchpad/launchpadinfo", data);
 export const launchpadBetList = (data) => request.post("/admin/launchpad/betlist", data);
 export const launchpadChangeStatus = (data) => request.post("/admin/launchpad/changeStatus", data);
+export const launchpadBindToken = (data) => request.post("/admin/bind/awardlist", data);
 
 
 export const userAirDrop = (data) => request.post("/admin/user/airDrop", data);

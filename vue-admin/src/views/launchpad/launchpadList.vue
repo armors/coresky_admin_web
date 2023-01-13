@@ -78,6 +78,7 @@
           <!-- <el-button size="mini" type="text" @click="handleDetail(scope.row)">白名单</el-button> -->
           <el-button size="mini" type="text" @click="showBetListDialog(scope.row)">中奖管理</el-button>
           <el-button size="mini" type="text" @click="showBetresultDialog(scope.row)">开奖</el-button>
+          <el-button size="mini" type="text" @click="contractHandle(scope.row)">合约交互</el-button>
 
         </template>
       </el-table-column>
@@ -89,13 +90,21 @@
   </div>
 </template>
 <script>
+import { mapGetters, mapState } from 'vuex'
 import Media from "@/components/Media";
+import launchpad from '../../utils/sdk/launchpad';
 import dayjs from "dayjs";
 import betresultDialog from './components/betResultDialog';
 import betListDialog from './components/betListDialog';
-import { launchpadList, launchpadUpdateStatus } from '@/api/common'
-
+import { launchpadList, launchpadUpdateStatus, launchpadBindToken, launchpadInfo } from '@/api/common'
+import util_web3 from "@/utils/web3/index.js";
 export default {
+  computed: {
+    ...mapState({
+      connected: (state) => state.network.connected,
+      web3: (state) => state.network.web3,
+    }),
+  },
   components: { Media, betresultDialog, betListDialog },
   data () {
     return {
@@ -105,7 +114,7 @@ export default {
       loading: false,
       queryParams: {
         page: 1,
-        limit: 3,
+        limit: 10,
         contract: '',
         name: '',
         owner: '',
@@ -113,9 +122,6 @@ export default {
         endTime: '',
       },
     };
-  },
-  computed: {
-
   },
   created () {
     this.getList();
@@ -155,6 +161,49 @@ export default {
     },
     showBetListDialog (item) {
       this.$refs.betListDialogRef.show(item.id)
+    },
+    async contractHandle (item) {
+      if (!this.connected) {
+        this.$store.dispatch("connect").then(() => {
+          this.getLaunchpadProject(item)
+        });
+      }
+      else {
+        this.getLaunchpadProject(item)
+      }
+    },
+    async getLaunchpadProject (item) {
+      let info = await launchpad.getProject(item.id)
+      if (info && info[0] != '"0x0000000000000000000000000000000000000000"') {
+        this.$modal.msgSuccess("合约操作已经执行");
+      }
+      else {
+        this.bindToken(item)
+      }
+    },
+    bindToken (item) {
+      launchpadBindToken({ lpId: item.id }).then(res => {
+        return launchpadInfo({ id: item.id })
+      }).then(res => {
+        const dataInfo = res.data
+        let data = {
+          lp_id: dataInfo.id,
+          target: dataInfo.contract,
+          merkleRoot: dataInfo.txRoot,
+          receipt: dataInfo.receiptAddress,
+          payment: dataInfo.payment,
+          price: util_web3.getWeb3().utils.toWei(dataInfo.price.toString()),
+          startTime: dataInfo.startTime,
+          endTime: dataInfo.endTime
+        }
+        return launchpad.launchpad(data, this.web3.coinbase)
+      }).then(res => {
+        if (res.status === true) {
+          this.$modal.msgSuccess("操作成功");
+        }
+        console.log(res)
+      }).catch(error => console.log(1, error));
+
     }
   },
 };

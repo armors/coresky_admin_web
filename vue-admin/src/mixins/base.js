@@ -6,6 +6,7 @@ export default {
     ...mapState({
       userId: (state) => state.user.userInfo.userId.toString(),
       nickName: (state) => state.user.userInfo.nickName,
+      connected: (state) => state.network.connected
     }),
 
     uploadAction () {

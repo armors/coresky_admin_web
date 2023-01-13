@@ -7,7 +7,7 @@
       </div>
       <el-tabs v-model="activeName" class="demo-tabs">
         <el-tab-pane label="基本信息" name="1">
-          <el-form ref="basicInfoForm" :model="formData" :rules="rules" size="small" label-width="105px">
+          <el-form ref="basicInfoForm" :model="formData" :rules="rules" size="small" label-width="120px">
             <el-divider content-position="left">项目信息</el-divider>
             <el-row :gutter="40">
               <el-col :span="12">
@@ -92,6 +92,18 @@
                 <el-form-item label="是否认证" prop="isCertification">
                   <el-switch :active-value="1" :inactive-value="0" v-model="formData.isCertification">
                   </el-switch>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="40">
+              <el-col :span="12">
+                <el-form-item label="白名单合约地址" prop="payment">
+                  <el-input placeholder="输入白名单合约地址" v-model="formData.treeAddress" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="收费钱包地址" prop="receiptAddress">
+                  <el-input placeholder="输入收费钱包地址" v-model="formData.receiptAddress" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -263,6 +275,8 @@ export default {
         payment: '', // 支付币种
 
         isCertification: 0,
+        treeAddress: '',
+        receiptAddress: '',
 
         rewardLink: '',
         privacyLink: '',
@@ -357,9 +371,10 @@ export default {
         data.teamIntro = this.teamIntroList ? JSON.stringify(this.teamIntroList) : ''
         data.roadmap = this.roadmapList ? JSON.stringify(this.roadmapList) : ''
         data.imgList = this.bannerList.join(',')
+        data.id = this.id
         let fun = data.id ? launchpadUpdate : launchpadCreate
         fun(data).then(res => {
-          if (!this.formData.id) {
+          if (!this.id) {
             this.formData.id = res.data
             let path = this.$route.path
             this.$router.push({

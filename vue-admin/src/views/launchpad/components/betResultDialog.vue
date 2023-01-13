@@ -36,7 +36,7 @@
 
 <script>
 import dayjs from 'dayjs'
-import { launchpadBetresult, launchpadInfo } from '@/api/common'
+import { launchpadBetresult, launchpadInfo, launchpadBindToken } from '@/api/common'
 import { getCodeImg } from "@/api/login";
 
 import base from "@/mixins/base";
@@ -77,7 +77,6 @@ export default {
         this.dataInfo.startTime = dayjs.unix(this.dataInfo.startTime).format('YYYY-MM-DD HH:mm:ss')
         this.dataInfo.endTime = dayjs.unix(this.dataInfo.endTime).format('YYYY-MM-DD HH:mm:ss')
         console.log(this.dataInfo)
-
       })
       // this.dataInfo = data
       this.open = true
@@ -94,6 +93,7 @@ export default {
         this.$modal.confirm(`是否确认开奖?`).then(() => {
           return launchpadBetresult({ lp_id: this.dataInfo.id, code: this.form.code })
         }).then(() => {
+          // launchpadBindToken({ lpId: this.dataInfo.id })
           this.$modal.msgSuccess('操作成功')
           this.open = false
         }).catch(() => {
@@ -101,7 +101,6 @@ export default {
           this.getCode()
         });
       })
-
     },
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="中奖管理" :visible.sync="open" width="980px" :close-on-click-modal="false">
     <el-form :model="queryParams" ref="queryForm" size="mini" :inline="true">
-      <el-form-item label="合约地址">
+      <el-form-item label="用户地址">
         <el-input v-model="queryParams.address" clearable style="width: 160">
         </el-input>
       </el-form-item>
@@ -21,13 +21,17 @@
       <el-table-column label="序号" align="center" type="index" width="70" />
       <el-table-column label="用户地址" align="center" prop="address" width="360" :show-overflow-tooltip="true" />
       <el-table-column label="彩票标识" align="center" prop="uuid" :show-overflow-tooltip="true" />
-      <el-table-column align="center" label="状态" prop="state">
+      <el-table-column align="center" label="状态" width="80" prop="state">
         <template #default="scope">
           {{ changeStatus(scope.row.status)  }}
         </template>
       </el-table-column>
-      <el-table-column label="下注时间" align="center" prop="create_time" :show-overflow-tooltip="true" />
-      <el-table-column align="center" label="操作" prop="state">
+      <el-table-column label="下注时间" align="center" prop="create_time" :show-overflow-tooltip="true">
+        <template #default="scope">
+          {{ dateParse(scope.row.createTime) }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作" width="90" prop="state">
         <template #default="scope">
           <el-button size="mini" type="text" @click="changeStatusOption(scope.row)">修改状态</el-button>
         </template>

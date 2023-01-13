@@ -13,7 +13,7 @@ const calcGas = async (web3, key, args, lastArg, ts) => {
   } else {
     gasPrice = await web3.eth.getGasPrice();
   }
- 
+
   const gas = await new Promise((resolve, reject) => {
     ts.estimateGas(
       {
@@ -36,10 +36,9 @@ const calcGas = async (web3, key, args, lastArg, ts) => {
 };
 
 class MyContract {
-  constructor(contract, abi, account) {
+  constructor(contract, abi) {
     this.contract = contract;
     this.abi = abi;
-    this.account = account;
     for (const key in this.contract.methods) {
       this[key] = async (...args) => {
         const a = this.abi.abi.find((a) => {
@@ -47,12 +46,8 @@ class MyContract {
         });
         return new Promise((resolve, reject) => {
           try {
-            const web3 = util_web3.getWeb3();
             if (a.inputs.length === args.length) {
               this.contract.methods[key](...args).call(
-                {
-                  from: this.account,
-                },
                 (e, r) => {
                   if (e) {
                     reject(e);
@@ -60,29 +55,42 @@ class MyContract {
                     resolve(r);
                   }
                 }
-              );
+              )
             } else {
               const lastArg = args.pop();
               const ts = this.contract.methods[key](...args);
-              calcGas(web3, key, args, lastArg, ts).then(({ gas, gasPrice }) => {
-                ts.send(
-                  {
-                    ...lastArg,
-                    gasPrice,
-                    gas,
-                  },
-                  (e, r) => {
-                    if (e) {
-                      reject(e);
-                    } else {
-                      resolve(r);
-                    }
-                  }
-                );
-              });
+              ts.send(
+                {
+                  ...lastArg,
+                  // gasPrice,
+                  // gas,
+                }
+              ).then(res => {
+                resolve(res);
+              })
+              // calcGas(web3, key, args, lastArg, ts).then((res) => {
+              //   if(res.error){
+              //     return resolve(res);
+              //   }
+              //   // var { gas, gasPrice } = res;
+              //   console.log({
+              //     ...lastArg,
+              //     // gasPrice,
+              //     // gas,
+              //   })
+              //   ts.send(
+              //     {
+              //       ...lastArg,
+              //       // gasPrice,
+              //       // gas,
+              //     }
+              //   ).then(res => {
+              //     resolve(res);
+              //   })
+              // });
             }
           } catch (e) {
-            reject(e);
+            reject({ error: e });
           }
         });
       };
@@ -91,30 +99,37 @@ class MyContract {
 }
 
 export default {
-  contractAt(abiName, address) {
+  contractAbi (type) {
+    let file = null;
+    switch (type) {
+      case "launchpad":
+        file = require('./abi/launchpad.json')
+        break;
+    }
+    return file || {};
+  },
+  contractAt (abi, address) {
     if (!store.state.network.connected) {
       return {
         error: "wallet not connected",
       };
     }
     try {
-      const account = util_web3.getAccount();
-      const abi = require(`./abi/${abiName}.json`);
       const web3 = util_web3.getWeb3();
       const contract = new web3.eth.Contract(abi.abi, address);
-      const myContract = new MyContract(contract, abi, account);
+      const myContract = new MyContract(contract, abi);
       return myContract;
     } catch (err) {
-      return err;
+      return { error: err };
     }
   },
-  async getContract(abiName) {
+  async getContract (abiName) {
     return this.contractAt(abiName);
   },
-  getAccount() {
+  getAccount () {
     return util_web3.getAccount();
   },
-  async deploy(abiName, args) {
+  async deploy (abiName, args) {
     try {
       const account = util_web3.getAccount();
       const abi = require(`./abi/${abiName}.json`);
@@ -144,8 +159,8 @@ export default {
           }
         });
       });
-      if(gas.code && gas.code == -32000){
-        return { error: gas.message}
+      if (gas.code && gas.code == -32000) {
+        return { error: gas.message }
       }
       return await new Promise((resolve) => {
         ts.send({ from: account, gasPrice, gas })
