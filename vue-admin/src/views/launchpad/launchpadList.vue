@@ -79,6 +79,11 @@
           <el-button size="mini" type="text" @click="showBetListDialog(scope.row)">中奖管理</el-button>
           <el-button size="mini" type="text" @click="showBetresultDialog(scope.row)">开奖</el-button>
           <el-button size="mini" type="text" @click="contractHandle(scope.row)">合约交互</el-button>
+          <el-upload class="ml5" :data="{lpId:scope.row.id}" style="display: inline-block;" :action="uploadAction" accept=".xls,.xlsx"
+            :show-file-list="false" :on-success="(res)=>uploadSuccessCoustom(res,scope.row.$index)" :before-upload="beforeUpload">
+            <el-button size="mini" type="text">导入Token</el-button>
+          </el-upload>
+          <el-button class="ml5" size="mini" type="text" @click="handleDelete(scope.row)">删除Token</el-button>
 
         </template>
       </el-table-column>
@@ -96,14 +101,20 @@ import launchpad from '../../utils/sdk/launchpad';
 import dayjs from "dayjs";
 import betresultDialog from './components/betResultDialog';
 import betListDialog from './components/betListDialog';
-import { launchpadList, launchpadUpdateStatus, launchpadBindToken, launchpadInfo } from '@/api/common'
+import { launchpadList, launchpadUpdateStatus, launchpadBindToken, launchpadInfo, launchpadRemoveTokens } from '@/api/common'
 import util_web3 from "@/utils/web3/index.js";
+import base from "@/mixins/base";
+
 export default {
+  mixins: [base],
   computed: {
     ...mapState({
       connected: (state) => state.network.connected,
       web3: (state) => state.network.web3,
     }),
+    uploadAction () {
+      return process.env.VUE_APP_BASE_API + `/admin/launchpad/inputTokens`;
+    },
   },
   components: { Media, betresultDialog, betListDialog },
   data () {
@@ -127,6 +138,27 @@ export default {
     this.getList();
   },
   methods: {
+    handleDelete (row) {
+      this.$modal
+        .confirm("是否确认删除？")
+        .then(function () {
+          return launchpadRemoveTokens({ lpId: row.id });
+        })
+        .then(() => {
+          this.getList();
+          this.$modal.msgSuccess("操作成功");
+        })
+        .catch(() => { });
+    },
+    uploadSuccessCoustom (res, index) {
+      this.successUploadHandle();
+      if (res.errno === 0) {
+        console.log(res, index)
+        this.$modal.msgSuccess("上传成功");
+      } else {
+        this.$modal.msgError(res.errmsg || "上传失败!");
+      }
+    },
     dateParse (time) {
       return dayjs.unix(time).format('YYYY-MM-DD HH:mm:ss')
     },
@@ -173,13 +205,15 @@ export default {
       }
     },
     async getLaunchpadProject (item) {
-      let info = await launchpad.getProject(item.id)
-      if (info && info[0] != '"0x0000000000000000000000000000000000000000"') {
-        this.$modal.msgSuccess("合约操作已经执行");
-      }
-      else {
-        this.bindToken(item)
-      }
+      this.bindToken(item)
+      // let info = await launchpad.getProject(item.id)
+      // console.log(info)
+      // if (info && info[0] != '"0x0000000000000000000000000000000000000000"') {
+      //   this.$modal.msgSuccess("合约操作已经执行");
+      // }
+      // else {
+      //   this.bindToken(item)
+      // }
     },
     bindToken (item) {
       launchpadBindToken({ lpId: item.id }).then(res => {

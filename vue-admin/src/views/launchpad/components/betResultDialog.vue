@@ -7,12 +7,12 @@
         </template> -->
         <el-descriptions-item label="项目名称">{{dataInfo.name}}</el-descriptions-item>
         <el-descriptions-item label="发售数量">{{dataInfo.total}}</el-descriptions-item>
-        <el-descriptions-item label="奖池彩票总数">{{dataInfo.betTotal}}</el-descriptions-item>
+        <el-descriptions-item label="奖池彩票总数">{{dataInfo.betCount}}</el-descriptions-item>
         <el-descriptions-item label="投注开始时间">{{dataInfo.startTime}}</el-descriptions-item>
         <el-descriptions-item label="投注结束时间">{{dataInfo.endTime}}</el-descriptions-item>
         <el-descriptions-item label="开奖时间">{{dataInfo.rewardTime}}</el-descriptions-item>
         <el-descriptions-item label="白名单数量">{{dataInfo.whiteCount}}</el-descriptions-item>
-        <el-descriptions-item label="实际开奖数量">{{dataInfo.betCount}}</el-descriptions-item>
+        <el-descriptions-item label="实际开奖数量">{{dataInfo.betTotal}}</el-descriptions-item>
       </el-descriptions>
       <el-row :gutter="60">
         <el-col :span="12" :xs="24">
