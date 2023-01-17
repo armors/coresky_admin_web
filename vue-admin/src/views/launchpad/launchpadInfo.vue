@@ -83,8 +83,9 @@
               <el-col :span="12">
                 <el-form-item label="项目币种" prop="payment">
                   <el-select style="width:100%" v-model="formData.payment" placeholder="选择项目币种">
-                    <el-option label="USDT" value="0x55d398326f99059fF775485246999027B3197955" />
-                    <el-option label="ETH" value="0x0000000000000000000000000000000000000000" />
+                    <el-option :label="key" v-for="(val,key) in tokenList" :key="key" :value="val">
+                      {{ key }}
+                    </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -248,6 +249,7 @@
 import Media from "@/components/Media";
 import base from "@/mixins/base";
 import dayjs from "dayjs";
+import config from '@/config/index'
 import { launchpadCreate, launchpadUpdate, launchpadInfo } from '@/api/common'
 
 export default {
@@ -292,11 +294,11 @@ export default {
         isShow: false,
       },
       bannerList: [
-        'http://54.169.232.16:8083/static/upload/x041yze9i38nu9fml6o3.png',
       ],
       introduceList: [],
       teamIntroList: [],
       roadmapList: [],
+      tokenList: config.tokenList(),
 
       rules: {
         name: [{ required: true, message: "项目名称不能为空", trigger: "blur" }],
@@ -317,6 +319,7 @@ export default {
     };
   },
   created () {
+    // console.log(config.tokenList())
     this.init()
   },
   methods: {
