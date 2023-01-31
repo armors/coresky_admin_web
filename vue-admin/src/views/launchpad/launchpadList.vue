@@ -84,6 +84,7 @@
             <el-button size="mini" type="text">导入Token</el-button>
           </el-upload>
           <el-button class="ml5" size="mini" type="text" @click="handleDelete(scope.row)">删除Token</el-button>
+          <el-button class="ml5" size="mini" type="text" @click="handleDeleteLP(scope.row)">删除项目</el-button>
 
         </template>
       </el-table-column>
@@ -101,7 +102,7 @@ import launchpad from '../../utils/sdk/launchpad';
 import dayjs from "dayjs";
 import betresultDialog from './components/betResultDialog';
 import betListDialog from './components/betListDialog';
-import { launchpadList, launchpadUpdateStatus, launchpadBindToken, launchpadInfo, launchpadRemoveTokens } from '@/api/common'
+import { launchpadList, launchpadUpdateStatus, launchpadBindToken, launchpadInfo, launchpadRemoveTokens, launchpadDel } from '@/api/common'
 import util_web3 from "@/utils/web3/index.js";
 import base from "@/mixins/base";
 
@@ -138,6 +139,18 @@ export default {
     this.getList();
   },
   methods: {
+    handleDeleteLP (row) {
+      this.$modal
+        .confirm("是否确认删除？")
+        .then(function () {
+          return launchpadDel({ id: row.id });
+        })
+        .then(() => {
+          this.getList();
+          this.$modal.msgSuccess("操作成功");
+        })
+        .catch(() => { });
+    },
     handleDelete (row) {
       this.$modal
         .confirm("是否确认删除？")

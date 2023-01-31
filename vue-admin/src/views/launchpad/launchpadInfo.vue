@@ -51,6 +51,16 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row :gutter="40">
+              <el-col :span="12">
+                <el-form-item label="活动结束时间" prop="overTime">
+                  <el-date-picker style="width:100%" value-format="yyyy-MM-dd HH:mm:ss" v-model="formData.overTime"
+                    format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择活动结束时间">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+
+            </el-row>
             <!-- <el-divider content-position="left">合约信息</el-divider> -->
             <el-row :gutter="40">
               <el-col :span="12">
@@ -307,6 +317,7 @@ export default {
         startTime: [{ required: true, message: "开始时间不能为空", trigger: "change" }],
         endTime: [{ required: true, message: "结束时间不能为空", trigger: "change" }],
         rewardTime: [{ required: true, message: "开奖时间不能为空", trigger: "change" }],
+        overTime: [{ required: true, message: "活动结束时间不能为空", trigger: "change" }],
         ownerName: [{ required: true, message: "项目作者不能为空", trigger: "blur" }],
         owner: [{ required: true, message: "项目作者地址不能为空", trigger: "blur" }],
         contract: [{ required: true, message: "合约地址不能为空", trigger: "blur" }],
@@ -314,7 +325,7 @@ export default {
         payment: [{ required: true, message: "项目币种不能为空", trigger: "change" }],
         bannerImage: [{ required: true, message: "背景图不能为空", trigger: "change" }],
         image: [{ required: true, message: "合集头像不能为空", trigger: "change" }],
-
+        receiptAddress: [{ required: true, message: "收费钱包地址不能为空", trigger: "blur" }],
       }
     };
   },
@@ -370,6 +381,7 @@ export default {
         data.startTime = dayjs(data.startTime).unix()
         data.endTime = dayjs(data.endTime).unix()
         data.rewardTime = dayjs(data.rewardTime).unix()
+        data.overTime = dayjs(data.overTime).unix()
         data.introduce = this.introduceList ? JSON.stringify(this.introduceList) : ''
         data.teamIntro = this.teamIntroList ? JSON.stringify(this.teamIntroList) : ''
         data.roadmap = this.roadmapList ? JSON.stringify(this.roadmapList) : ''
@@ -408,6 +420,8 @@ export default {
           this.introduceList = JSON.parse(this.formData.introduce) || []
         }
         this.formData.rewardTime = dayjs.unix(this.formData.rewardTime).format('YYYY-MM-DD HH:mm:ss')
+        this.formData.overTime = this.formData.overTime && dayjs.unix(this.formData.overTime).format('YYYY-MM-DD HH:mm:ss')
+
         this.formData.startTime = dayjs.unix(this.formData.startTime).format('YYYY-MM-DD HH:mm:ss')
         this.formData.endTime = dayjs.unix(this.formData.endTime).format('YYYY-MM-DD HH:mm:ss')
         this.bannerList = this.formData.imgList.split(',')
