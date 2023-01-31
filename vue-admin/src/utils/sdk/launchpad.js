@@ -8,8 +8,8 @@ export default {
       let receipt = data.receipt
       let payment = data.payment
       let price = data.price
-      let startTime = data.startTime
-      let endTime = data.startTime
+      let startTime = data.rewardTime
+      let endTime = data.overTime
       let abi = utils.contractAbi("launchpad");
       const _contract = await utils.contractAt({ abi }, address);
       const result = await _contract.launchpad(
