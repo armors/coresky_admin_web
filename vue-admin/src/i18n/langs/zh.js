@@ -377,6 +377,8 @@ export default {
     contractType: "合约类型",
     royalty: "版税费率",
     info: "项目介绍",
+    rewardType:'奖赏规则'
+
   },
   nftManagement: {
     placeholder1: "请输入所有人地址",

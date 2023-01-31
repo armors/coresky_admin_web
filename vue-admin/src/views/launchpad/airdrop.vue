@@ -56,7 +56,7 @@ export default {
       loading: false,
       codeUrl: "",
       form: {
-        ids: '0x820719c13820700dd8d0c9c941E167809534407A',
+        ids: '',
         amount: '',
         code: '',
       },

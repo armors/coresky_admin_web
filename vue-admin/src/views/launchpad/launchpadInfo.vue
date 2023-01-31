@@ -272,7 +272,7 @@ export default {
 
         owner: '',
         ownerName: '',
-        contract: '0xeb1e502410bb45e51907b88b0ea9a08fb575d3c2',
+        contract: '',
         contractType: '',
         payment: '', // 支付币种
 
@@ -378,6 +378,7 @@ export default {
         let fun = data.id ? launchpadUpdate : launchpadCreate
         fun(data).then(res => {
           if (!this.id) {
+            this.id = res.data
             this.formData.id = res.data
             let path = this.$route.path
             this.$router.push({

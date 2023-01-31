@@ -67,8 +67,7 @@ export const launchpadBindToken = (data) => request.post("/admin/bind/awardlist"
 export const launchpadRemoveTokens = (data) => request.post("/admin/launchpad/removeTokens", data);
 
 
-
-
+export const rewardList = (data) => request.post("/admin/reward/list", data);
 export const userAirDrop = (data) => request.post("/admin/user/airDrop", data);
 
 

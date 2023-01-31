@@ -78,7 +78,7 @@
           <!-- <el-button size="mini" type="text" @click="handleDetail(scope.row)">白名单</el-button> -->
           <el-button size="mini" type="text" @click="showBetListDialog(scope.row)">中奖管理</el-button>
           <el-button size="mini" type="text" @click="showBetresultDialog(scope.row)">开奖</el-button>
-          <el-button size="mini" type="text" @click="contractHandle(scope.row)">合约交互</el-button>
+          <el-button size="mini" :loading="scope.row.loading" type="text" @click="contractHandle(scope.row)">合约交互</el-button>
           <el-upload class="ml5" :data="{lpId:scope.row.id}" style="display: inline-block;" :action="uploadAction" accept=".xls,.xlsx"
             :show-file-list="false" :on-success="(res)=>uploadSuccessCoustom(res,scope.row.$index)" :before-upload="beforeUpload">
             <el-button size="mini" type="text">导入Token</el-button>
@@ -165,7 +165,10 @@ export default {
     getList () {
       this.loading = true;
       launchpadList(this.queryParams).then(res => {
-        this.dataList = res.data.list
+        this.dataList = res.data.list.map(el => {
+          el.loading = false
+          return el
+        })
         this.total = res.data.total
         this.loading = false
       })
@@ -205,17 +208,16 @@ export default {
       }
     },
     async getLaunchpadProject (item) {
-      this.bindToken(item)
-      // let info = await launchpad.getProject(item.id)
-      // console.log(info)
-      // if (info && info[0] != '"0x0000000000000000000000000000000000000000"') {
-      //   this.$modal.msgSuccess("合约操作已经执行");
-      // }
-      // else {
-      //   this.bindToken(item)
-      // }
+      let info = await launchpad.getProject(item.id, item.treeAddress)
+      if (info && info[0] != '0x0000000000000000000000000000000000000000') {
+        this.$modal.msgSuccess("合约交互已经执行");
+      }
+      else {
+        this.bindToken(item)
+      }
     },
     bindToken (item) {
+      item.loading = true
       launchpadBindToken({ lpId: item.id }).then(res => {
         return launchpadInfo({ id: item.id })
       }).then(res => {
@@ -230,14 +232,21 @@ export default {
           startTime: dataInfo.startTime,
           endTime: dataInfo.endTime
         }
-        return launchpad.launchpad(data, this.web3.coinbase)
+        return launchpad.launchpad(data, this.web3.coinbase, dataInfo.treeAddress)
       }).then(res => {
-        if (res.status === true) {
-          this.$modal.msgSuccess("操作成功");
+        item.loading = false
+        if (res.error) {
+          this.$modal.msgError(res.error);
         }
-        console.log(res)
-      }).catch(error => console.log(1, error));
-
+        else {
+          if (res.status === true) {
+            this.$modal.msgSuccess("操作成功");
+          }
+        }
+      }).catch(error => {
+        item.loading = false
+        console.log(1, error)
+      });
     }
   },
 };

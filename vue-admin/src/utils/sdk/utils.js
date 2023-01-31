@@ -67,7 +67,10 @@ class MyContract {
                 }
               ).then(res => {
                 resolve(res);
-              })
+              }).catch(res => {
+                console.log(res)
+                reject(res);
+              });
               // calcGas(web3, key, args, lastArg, ts).then((res) => {
               //   if(res.error){
               //     return resolve(res);

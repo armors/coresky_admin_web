@@ -379,6 +379,7 @@ export default {
     contractType: "contractType",
     royalty: "exchangeRate",
     info: "Project Info",
+    rewardType:'rewardType'
   },
   nftManagement: {
     placeholder1: "please enter owner",
