@@ -14,6 +14,11 @@ export const contractList = (data) => request.post("/admin/contract/list", data)
 export const contractCreate = (data) => request.post("/admin/contract/create", data);
 export const contractUpdate = (data) => request.post("/admin/contract/update", data);
 export const contractDelete = (data) => request.post("/admin/contract/delete", data);
+export const contractSubscribeList = (data) => request.post("/admin/contract/getSubscribeList", data);
+export const contractDelSubscribe = (data) => request.post("/admin/contract/delSubscribe", data);
+export const contractAddSubscribe = (data) => request.post("/admin/contract/addSubscribe", data);
+export const contractUpdateSubscribe = (data) => request.post("/admin/contract/updateSubscribe", data);
+
 
 export const storageCreate = (data) => request.post("/admin/storage/create", data);
 

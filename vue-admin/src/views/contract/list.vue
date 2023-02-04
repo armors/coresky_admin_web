@@ -24,6 +24,7 @@
             {{ $t("global.edit") }}</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)" v-if="!scope.row.deleted"
             v-permission="['POST /admin/contract/delete']">{{ $t("global.delete") }}</el-button>
+          <el-button type="primary" size="mini" @click="showSubscribeDialog(scope.row)">订阅配置</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -83,6 +84,11 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="合约部署时间" prop="deployTime">
+          <el-date-picker style="width:100%" value-format="yyyy-MM-dd" v-model="dataForm.deployTime" format="yyyy-MM-dd"
+            placeholder="选择结束时间">
+          </el-date-picker>
+        </el-form-item>
         <el-form-item :label="$t('contract.website')" prop="website">
           <el-input v-model="dataForm.website" />
         </el-form-item>
@@ -107,13 +113,17 @@
         </div>
       </template>
     </el-dialog>
+    <subscribeDialog ref="subscribeDialogRef" />
   </div>
 </template>
 
 <script>
 // import Media from "@/components/Media";
+import dayjs from "dayjs";
 import base from "@/mixins/base";
 import UploadUnit from "@/components/Upload.vue";
+import subscribeDialog from './components/subscribeDialog';
+
 import {
   categoryList,
   contractList,
@@ -125,7 +135,7 @@ import {
 } from "@/api/common";
 
 export default {
-  components: { UploadUnit },
+  components: { UploadUnit, subscribeDialog },
   mixins: [base],
   data () {
     return {
@@ -200,6 +210,9 @@ export default {
     this.getRewardList()
   },
   methods: {
+    showSubscribeDialog (row) {
+      this.$refs.subscribeDialogRef.show(row.id)
+    },
     getRewardList () {
       rewardList({
         page: 1,
@@ -289,6 +302,8 @@ export default {
     createData (response) {
       var data = Object.assign({}, this.dataForm);
       data.isAdmin = !data.isAdmin ? 0 : 1;
+      data.deployTime = dayjs(this.dataForm.deployTime).unix()
+
       if (response) {
         data.bannerImage = this.IMG_URL + response.data.url;
       }
@@ -310,6 +325,7 @@ export default {
     },
     handleUpdate (row) {
       this.dataForm = Object.assign({}, row);
+      this.dataForm.deployTime = this.dataForm.deployTime && dayjs.unix(this.dataForm.deployTime).format('YYYY-MM-DD')
       this.dataForm.isDefault = this.dataForm.isDefault == 1 ? true : false;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
@@ -352,6 +368,7 @@ export default {
           ? this.IMG_URL + response.data.url
           : this.dataForm.cover,
         isAdmin: !this.dataForm.isAdmin ? 0 : 1,
+        deployTime: dayjs(this.dataForm.deployTime).unix()
       });
       contractUpdate(data)
         .then((res) => {

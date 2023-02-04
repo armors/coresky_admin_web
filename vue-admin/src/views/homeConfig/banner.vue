@@ -56,7 +56,7 @@
           <el-switch :active-value="1" :inactive-value="0" v-model="form.enable">
           </el-switch>
         </el-form-item>
-        <el-form-item label="兑换有效期">
+        <el-form-item label="有效期">
           <el-date-picker style="width: 100%;" @change="dateChange()" value-format="yyyy-MM-dd HH:mm:ss" v-model="myDatetime"
             type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>
