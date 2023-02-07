@@ -75,6 +75,9 @@ export const launchpadDel = (data) => request.post("/admin/launchpad/del", data)
 
 
 export const rewardList = (data) => request.post("/admin/reward/list", data);
+export const rewardCreate = (data) => request.post("/admin/reward/create", data);
+export const rewardUpdate = (data) => request.post("/admin/reward/update", data);
+
 export const userAirDrop = (data) => request.post("/admin/user/airDrop", data);
 
 

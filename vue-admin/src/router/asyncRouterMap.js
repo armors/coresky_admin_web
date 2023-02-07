@@ -34,6 +34,24 @@ export default [
           noCache: true,
         },
       },
+      {
+        path: "airDropScore",
+        component: () => import("@/views/userManagement/airDropScore"),
+        name: "airDropScore",
+        meta: {
+          title: "积分投放",
+          noCache: true,
+        },
+      },
+      {
+        path: "airDropRewards",
+        component: () => import("@/views/userManagement/airDropRewards"),
+        name: "airDropRewards",
+        meta: {
+          title: "彩票投放",
+          noCache: true,
+        },
+      },
     ],
   },
   {
@@ -89,33 +107,79 @@ export default [
       },
     ],
   },
+  // {
+  //   path: "/config",
+  //   component: Layout,
+  //   redirect: "noredirect",
+  //   meta: {
+  //     title: "router.config",
+  //     icon: "table",
+  //   },
+  //   children: [
+  //     {
+  //       path: "webConfig",
+  //       component: () => import("@/views/config/WebConfig"),
+  //       name: "webConfig",
+  //       meta: {
+  //         title: "router.webConfig",
+  //         noCache: true,
+  //       },
+  //     },
+  //     {
+  //       path: "contractConfig",
+  //       component: () => import("@/views/config/ContractConfig"),
+  //       name: "contractConfig",
+  //       meta: {
+  //         title: "router.contractConfig",
+  //         noCache: true,
+  //       },
+  //     },
+  //   ],
+  // },
   {
-    path: "/config",
+    path: "/launchpad",
     component: Layout,
-    redirect: "noredirect",
     meta: {
-      title: "router.config",
+      title: "launchpad管理",
       icon: "table",
     },
     children: [
       {
-        path: "webConfig",
-        component: () => import("@/views/config/WebConfig"),
-        name: "webConfig",
+        path: "launchpadList",
+        component: () => import("@/views/launchpad/launchpadList"),
+        name: "launchpadList",
         meta: {
-          title: "router.webConfig",
+          title: "launchpad管理",
           noCache: true,
         },
       },
       {
-        path: "contractConfig",
-        component: () => import("@/views/config/ContractConfig"),
-        name: "contractConfig",
+        path: "launchpadInfo",
+        component: () => import("@/views/launchpad/launchpadInfo"),
+        name: "launchpadInfo",
+        hidden: true,
         meta: {
-          title: "router.contractConfig",
+          title: "launchpad详情",
           noCache: true,
         },
       },
+
+    ],
+  },
+  {
+    path: "/rewardRule",
+    component: Layout,
+    meta: { title: "奖励分类管理", icon: "table" },
+    children: [
+      {
+        path: "rewardList",
+        component: () => import("@/views/rewardRule/rewardList"),
+        name: "rewardList",
+        meta: {
+          title: "奖励分类管理",
+          noCache: true,
+        },
+      }
     ],
   },
   {
@@ -188,6 +252,7 @@ export default [
     ],
     hidden: true,
   },
+
   // {
   //   path: "/analysis",
   //   component: Layout,

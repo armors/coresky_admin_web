@@ -73,46 +73,6 @@ export const constantRoutes = [
       },
     ],
   },
-  {
-    path: "/launchpad",
-    component: Layout,
-    meta: {
-      title: "launchpad管理",
-      icon: "table",
-    },
-    children: [
-      {
-        path: "launchpadList",
-        component: () => import("@/views/launchpad/launchpadList"),
-        name: "launchpadList",
-        meta: {
-          title: "launchpad管理",
-          noCache: true,
-        },
-      },
-      {
-        path: "launchpadInfo",
-        component: () => import("@/views/launchpad/launchpadInfo"),
-        name: "launchpadInfo",
-        hidden: true,
-        meta: {
-          title: "launchpad详情",
-          noCache: true,
-        },
-      },
-      {
-        path: "airdrop",
-        component: () => import("@/views/launchpad/airdrop"),
-        name: "airdrop",
-        meta: {
-          title: "用户彩票空投",
-          noCache: true,
-        },
-      },
-    ],
-  },
-
-
 ];
 
 // 动态路由，基于用户权限动态去加载
