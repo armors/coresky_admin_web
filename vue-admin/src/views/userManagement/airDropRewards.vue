@@ -1,7 +1,7 @@
 <template>
   <div class="app-container grey">
     <div class="page-center" v-loading="loading">
-      <div class="page-title">彩票投放
+      <div class="page-title">彩票发放
         <div class="fr">
           <el-button type="primary" class="mr20" @click="submitForm">提交</el-button>
         </div>
@@ -18,7 +18,8 @@
               </el-col>
               <el-col :span="12" :xs="24">
                 <el-form-item label="彩票数量" prop="amount">
-                  <el-input v-model="form.amount" placeholder="请输入彩票数量" size="default"></el-input>
+                  <!-- <el-input v-model="form.amount" placeholder="请输入彩票数量" size="default"></el-input> -->
+                  <el-input-number size="default" v-model="form.amount" :min="0" :max="9990000" :controls="false"></el-input-number>
                 </el-form-item>
               </el-col>
               <el-col :span="12" :xs="24">
@@ -61,7 +62,7 @@ export default {
         code: '',
       },
       rules: {
-        ids: [{ required: true, message: "空投用户不能为空", trigger: "blur" }],
+        ids: [{ required: true, message: "发放用户不能为空", trigger: "blur" }],
         amount: [{ required: true, message: "彩票数量不能为空", trigger: "blur" }],
         code: [{ required: true, message: "验证吗不能为空", trigger: "blur" }],
       }
