@@ -22,14 +22,17 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" size="small" :element-loading-text="$t('global.loadingText')" border
       highlight-current-row>
-      <el-table-column align="center" :label="$t('userData.address')" prop="address" width="340" />
-      <el-table-column align="center" :label="$t('userData.nickname')" prop="nickname" />
-      <el-table-column align="center" :label="$t('userData.photo')" prop="photo">
+      <el-table-column align="center" :label="$t('userData.address')" prop="address" />
+      <el-table-column align="center" :label="$t('userData.nickname')" prop="nickname" width="200" />
+      <el-table-column align="center" :label="$t('userData.photo')" prop="photo" width="200">
         <template #default="scope">
           <media v-if="scope.row.photo" :isPreview="true" :url="scope.row.photo" type="image"></media>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('userData.certificationStatus')" prop="userVerify">
+      <el-table-column align="center" label="积分" prop="score" width="100" />
+      <el-table-column align="center" label="彩票" prop="rewards" width="100" />
+
+      <el-table-column align="center" :label="$t('userData.certificationStatus')" prop="userVerify" width="120">
         <template #default="scope">
           <el-tag v-if="scope.row.userVerify == 0 || !scope.row.userVerify" type="info">
             {{ $t("userData.unauthenticated") }}</el-tag>
@@ -42,8 +45,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" :label="$t('userData.operation')" width="160"
-        class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('userData.operation')" width="160" class-name="small-padding fixed-width">
         <template #default="scope">
           <!-- <el-button type="primary" size="small" @click="handleDetail(scope.row)">{{ $t("userData.details") }}
           </el-button> -->
@@ -56,8 +58,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
-      @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <!-- 对话框 -->
     <el-dialog :title="$t('userData.details')" :visible.sync="dialogFormVisible">

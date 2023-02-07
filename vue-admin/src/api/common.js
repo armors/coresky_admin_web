@@ -80,4 +80,5 @@ export const rewardUpdate = (data) => request.post("/admin/reward/update", data)
 
 export const userAirDrop = (data) => request.post("/admin/user/airDrop", data);
 
+export const userAirDropRewards = (data) => request.post("/admin/user/airDropRewards", data);
 

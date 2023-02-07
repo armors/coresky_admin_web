@@ -45,7 +45,7 @@
 <script>
 import Media from "@/components/Media";
 import { getCodeImg } from "@/api/login";
-import { userAirDrop } from '@/api/common'
+import { userAirDropRewards } from '@/api/common'
 
 import { nftList, nftDetail, nftOnsale, nftVerify, nftDisable } from '@/api/common'
 
@@ -83,7 +83,7 @@ export default {
           amount: this.form.amount,
           code: this.form.code
         }
-        userAirDrop(data).then(res => {
+        userAirDropRewards(data).then(res => {
           this.$modal.msgSuccess("操作成功");
           this.form.code = ''
           this.form.amount = ''
@@ -91,7 +91,6 @@ export default {
           this.getCode()
         })
       })
-
     },
     getCode () {
       getCodeImg().then(res => {

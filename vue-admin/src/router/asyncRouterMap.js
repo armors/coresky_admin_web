@@ -39,7 +39,7 @@ export default [
         component: () => import("@/views/userManagement/airDropScore"),
         name: "airDropScore",
         meta: {
-          title: "积分投放",
+          title: "积分发放",
           noCache: true,
         },
       },
@@ -48,7 +48,7 @@ export default [
         component: () => import("@/views/userManagement/airDropRewards"),
         name: "airDropRewards",
         meta: {
-          title: "彩票投放",
+          title: "彩票发放",
           noCache: true,
         },
       },
