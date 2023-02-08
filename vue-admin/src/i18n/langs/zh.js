@@ -392,7 +392,7 @@ export default {
     unauthenticated: "未认证",
     certificationPassed: "认证通过",
     authenticationFailed: "认证失败",
-    nftAddress: "nft地址",
+    nftAddress: "合集地址",
     creator: "所有者",
     type: "类型",
     createTime: "创建时间",

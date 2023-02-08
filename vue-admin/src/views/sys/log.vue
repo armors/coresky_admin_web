@@ -3,13 +3,11 @@
     <!-- 查询和其他操作 -->
     <el-form ref="queryForm" label-width="100px" size="small" :inline="true">
       <el-form-item label="" class="wItem">
-        <el-input v-model="listQuery.name" clearable :placeholder="$t('systemManagement.placeholder2')"
-          style="width:200px">
+        <el-input v-model="listQuery.name" clearable :placeholder="$t('systemManagement.placeholder2')" style="width:200px">
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" v-permission="['GET /admin/log/list']" icon="el-icon-search" size="mini"
-          @click="handleFilter">
+        <el-button type="primary" v-permission="['GET /admin/log/list']" icon="el-icon-search" size="mini" @click="handleFilter">
           {{ $t("nftManagement.select") }}
         </el-button>
       </el-form-item>
@@ -19,7 +17,11 @@
       highlight-current-row>
       <el-table-column align="center" :label="$t('systemManagement.operationsAdministrator')" prop="admin" />
       <el-table-column align="center" :label="$t('systemManagement.ipAddress')" prop="ip" />
-      <el-table-column align="center" :label="$t('systemManagement.operatingTime')" prop="createTime" />
+      <el-table-column align="center" :label="$t('systemManagement.operatingTime')" prop="createTime">
+        <template #default="scope">
+          {{ timeFilter(scope.row.createTime) }}
+        </template>
+      </el-table-column>
       <el-table-column align="center" :label="$t('systemManagement.operatingClass')" prop="type">
         <template #default="scope">
           <el-tag>{{ typeFilter(scope.row.type) }}</el-tag>
@@ -41,8 +43,7 @@
       <el-table-column align="center" :label="$t('systemManagement.operationResult')" prop="result" />
       <el-table-column align="center" :label="$t('systemManagement.noteInformation')" prop="comment" />
     </el-table>
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
-      @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
   </div>
 </template>
@@ -50,6 +51,7 @@
 <script>
 import { logList } from '@/api/common'
 import i18n from "@/i18n/index";
+import dayjs from 'dayjs';
 const typeMap = {
   0: "systemManagement.generalOperation",
   1: "systemManagement.safeOperation",
@@ -88,6 +90,10 @@ export default {
   methods: {
     typeFilter (type) {
       return i18n.t(typeMap[type]);
+    },
+    timeFilter (time) {
+      console.log(time)
+      return dayjs(time * 1000).format('YYYY-MM-DD hh:mm')
     },
     getList () {
       this.listLoading = true;

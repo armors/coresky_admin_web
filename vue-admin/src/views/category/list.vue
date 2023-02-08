@@ -11,7 +11,7 @@
       border fit highlight-current-row>
       <el-table-column align="center" :label="$t('sortManagement.categoryId')" prop="id" />
       <el-table-column align="center" :label="$t('sortManagement.categoryName')" prop="name" />
-      <el-table-column align="center" :label="$t('sortManagement.weight')" prop="order" />
+      <el-table-column align="center" :label="$t('sortManagement.weight')" prop="weight" />
       <el-table-column align="center" :label="$t('sortManagement.state')" prop="deleted">
         <template #default="scope">
           <el-tag type="success" size="small" v-if="!scope.row.deleted">{{
@@ -45,14 +45,14 @@
         <el-form-item :label="$t('sortManagement.categoryName')" prop="name" v-if="dialogStatus == 'detail'">
           <span>{{ dataForm.name }}</span>
         </el-form-item>
-        <el-form-item :label="$t('sortManagement.weight')" prop="order" v-if="dialogStatus == 'detail'">
-          <span>{{ dataForm.order }}</span>
+        <el-form-item :label="$t('sortManagement.weight')" prop="weight" v-if="dialogStatus == 'detail'">
+          <span>{{ dataForm.weight }}</span>
         </el-form-item>
         <el-form-item :label="$t('sortManagement.categoryName')" prop="name" v-if="dialogStatus != 'detail'">
-          <el-input v-model="dataForm.name" />
+          <el-input v-model="dataForm.name" :maxlength="20" />
         </el-form-item>
-        <el-form-item :label="$t('sortManagement.weight')" prop="order" v-if="dialogStatus != 'detail'">
-          <el-input v-model="dataForm.order" />
+        <el-form-item :label="$t('sortManagement.weight')" prop="weight" v-if="dialogStatus != 'detail'">
+          <el-input v-model="dataForm.weight" />
         </el-form-item>
       </el-form>
       <template #footer class="dialog-footer">
@@ -86,7 +86,7 @@ export default {
         username: undefined,
         mobile: undefined,
         sort: "create_time",
-        order: "desc",
+        weight: "desc",
       },
       dialogFormVisible: false,
       dialogStatus: "",

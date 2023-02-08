@@ -393,7 +393,7 @@ export default {
     unauthenticated: "unauthenticated",
     certificationPassed: "certificationPassed",
     authenticationFailed: "authenticationFailed",
-    nftAddress: "nftAddress",
+    nftAddress: "contractAddress",
     creator: "owner",
     type: "type",
     createTime: "createTime",

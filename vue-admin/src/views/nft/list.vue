@@ -2,18 +2,15 @@
   <div class="app-container">
     <el-form ref="queryForm" label-width="100px" size="small" :inline="true">
       <el-form-item label="" class="wItem">
-        <el-input v-model="listQuery.address" clearable :placeholder="$t('nftManagement.placeholder1')"
-          style="width:200px">
+        <el-input v-model="listQuery.address" clearable :placeholder="$t('nftManagement.placeholder1')" style="width:200px">
         </el-input>
       </el-form-item>
       <el-form-item label="" class="wItem">
-        <el-input v-model="listQuery.contract" clearable :placeholder="$t('nftManagement.placeholder2')"
-          style="width:200px">
+        <el-input v-model="listQuery.contract" clearable :placeholder="$t('nftManagement.placeholder2')" style="width:200px">
         </el-input>
       </el-form-item>
       <el-form-item label="" class="wItem">
-        <el-input v-model="listQuery.tokenId" clearable :placeholder="$t('nftManagement.placeholder3')"
-          style="width:200px">
+        <el-input v-model="listQuery.tokenId" clearable :placeholder="$t('nftManagement.placeholder3')" style="width:200px">
         </el-input>
       </el-form-item>
       <el-form-item>
@@ -23,8 +20,7 @@
       </el-form-item>
     </el-form>
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('nftManagement.loadingText')" border fit
-      highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('nftManagement.loadingText')" border fit highlight-current-row>
       <el-table-column align="center" :label="$t('nftManagement.name')" prop="name" width="100px">
         <template #default="scope">
           <span>{{ scope.row.name }}</span>
@@ -52,7 +48,7 @@
       <el-table-column align="center" :label="$t('nftManagement.onsellStatus')" prop="state" width="150">
         <template #default="scope">
 
-          <el-tag type="success" v-if="scope.row.state == 1">
+          <el-tag type="success" v-if="scope.row.state == -1">
             {{$t('nftManagement.onSale')}}
           </el-tag>
           <el-tag type="danger" v-if="scope.row.state == 0">
@@ -61,12 +57,11 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
-      @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <!-- 对话框 -->
     <el-dialog :title="$t('nftManagement.details')" :visible.sync="dialogFormVisible">
-      <el-table v-loading="listLoading" :data="details" :element-loading-text="$t('nftManagement.loadingText')" border
-        fit highlight-current-row>
+      <el-table v-loading="listLoading" :data="details" :element-loading-text="$t('nftManagement.loadingText')" border fit
+        highlight-current-row>
         <el-table-column align="center" label="ID" prop="id" width="100px" />
         <el-table-column align="center" :label="$t('nftManagement.name')" prop="name" width="100px" />
         <el-table-column align="center" :label="$t('nftManagement.createTime')" prop="createTime" width="100px">
@@ -96,8 +91,7 @@
         <el-table-column align="center" :label="$t('nftManagement.price')" prop="usdtPrice" width="100px" />
         <el-table-column align="center" :label="$t('nftManagement.picture')" prop="metadataContent">
           <template #default="scope">
-            <media v-if="scope.row.metadataContent.image" :isPreview="true" :url="scope.row.metadataContent.image"
-              type="image"></media>
+            <media v-if="scope.row.metadataContent.image" :isPreview="true" :url="scope.row.metadataContent.image" type="image"></media>
           </template>
         </el-table-column>
       </el-table>

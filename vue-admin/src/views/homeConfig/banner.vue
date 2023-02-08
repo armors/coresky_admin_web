@@ -169,6 +169,7 @@ export default {
     },
     // 表单重置
     reset () {
+      this.myDatetime = null
       this.form = {
         id: "",
         advId: "1",
