@@ -82,3 +82,6 @@ export const userAirDrop = (data) => request.post("/admin/user/airDrop", data);
 
 export const userAirDropRewards = (data) => request.post("/admin/user/airDropRewards", data);
 
+export const uploadConfig = (data) => request.get("/oss");
+
+

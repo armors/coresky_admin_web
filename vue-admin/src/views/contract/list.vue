@@ -64,12 +64,18 @@
           <el-input v-model="dataForm.owner" />
         </el-form-item>
         <el-form-item :label="$t('contract.bannerImage')" prop="bannerImage">
-          <upload-unit v-if="dialogFormVisible" :refName="'contractRef'" :limitNum="1" :imageData="dataForm.bannerImage"
+          <!-- <upload-unit v-if="dialogFormVisible" :refName="'contractRef'" :limitNum="1" :imageData="dataForm.bannerImage"
             :uploadStatus="dialogStatus == 'create' || dialogStatus == 'update'" @updateData="updateCover">
-          </upload-unit>
+          </upload-unit> -->
+          <el-upload class="avatar-uploader" :action="OSS_URL" accept="image/jpg, image/jpeg, image/png, image/gif" :show-file-list="false"
+            :data="OSS_PARAM" :on-success="uploadSuccess" :before-upload="oss_beforeUpload">
+            <img v-if="dataForm.bannerImage" :src="dataForm.bannerImage" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+          <div style="font-size:12px;color: #878080;">*支持PNG、JPG、GIF等文件 推荐尺寸：1920*320 推荐大小：&lt;1M</div>
         </el-form-item>
         <el-form-item :label="$t('contract.feeContract')" prop="feeContract">
-          <el-input v-model="dataForm.feeContract" />
+          <el-input v-model="dataForm.feeContract" />d
         </el-form-item>
         <el-form-item :label="$t('contract.royalty')" prop="royalty">
           <el-input v-model="dataForm.royalty" />
@@ -210,6 +216,11 @@ export default {
     this.getRewardList()
   },
   methods: {
+    uploadSuccess (res) {
+      this.oss_uploadSuccess();
+      this.dataForm.bannerImage = this.OSS_IMAGE_URL
+      console.log(this.dataForm)
+    },
     showSubscribeDialog (row) {
       this.$refs.subscribeDialogRef.show(row.id)
     },
@@ -283,19 +294,7 @@ export default {
       var _this = this;
       this.$refs["dataForm"].validate(async function (valid) {
         if (valid) {
-          var response;
-          if (_this.fileImage) {
-            response = await _this.uploadFile();
-            if (!_this.$tool.checkResponse(response)) {
-              _this.$notify.error({
-                title: _this.$t("global.fail"),
-                message: response.errmsg,
-              });
-              return;
-            }
-          }
-
-          _this.createData(response);
+          _this.createData();
         }
       });
     },
@@ -304,9 +303,6 @@ export default {
       data.isAdmin = !data.isAdmin ? 0 : 1;
       data.deployTime = dayjs(this.dataForm.deployTime).unix()
 
-      if (response) {
-        data.bannerImage = this.IMG_URL + response.data.url;
-      }
       contractCreate(data)
         .then((res) => {
           this.dialogFormVisible = false;
@@ -337,18 +333,7 @@ export default {
       var _this = this;
       this.$refs["dataForm"].validate(async function (valid) {
         if (valid) {
-          var response;
-          if (_this.fileImage) {
-            response = await _this.uploadFile();
-            if (!_this.$tool.checkResponse(response)) {
-              _this.$notify.error({
-                title: _this.$t("global.fail"),
-                message: response.errmsg,
-              });
-              return;
-            }
-          }
-          _this.updateData(response);
+          _this.updateData();
         }
       });
     },
@@ -364,9 +349,6 @@ export default {
     async updateData (response) {
       var data = Object.assign({}, this.dataForm, {
         id: this.dataForm.id,
-        bannerImage: response
-          ? this.IMG_URL + response.data.url
-          : this.dataForm.cover,
         isAdmin: !this.dataForm.isAdmin ? 0 : 1,
         deployTime: dayjs(this.dataForm.deployTime).unix()
       });
@@ -425,6 +407,11 @@ export default {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  img {
+    width: 600px;
+    height: 200px;
+    display: block;
+  }
 }
 .avatar-uploader .el-upload:hover {
   border-color: #20a0ff;
@@ -432,9 +419,10 @@ export default {
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 120px;
-  height: 120px;
-  line-height: 120px;
+  width: 600px;
+  height: 200px;
+  display: block;
+  line-height: 200px;
   text-align: center;
 }
 </style>

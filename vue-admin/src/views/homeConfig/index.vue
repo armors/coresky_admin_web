@@ -5,7 +5,7 @@
         <banner v-if="item.name == 'banner'" />
         <bannerBottom v-if="item.name == 'bannerBottom'" />
         <trending v-if="item.name == 'trending'" />
-        <launchpad v-if="item.name == 'launchpad'" />
+        <!-- <launchpad v-if="item.name == 'launchpad'" /> -->
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -31,7 +31,7 @@ export default {
         { name: "banner", label: '首页开屏区配置' },
         { name: "bannerBottom", label: '开屏区下方配置' },
         { name: "trending", label: '时下流行区配' },
-        { name: "launchpad", label: '发射日历区配置' },
+        // { name: "launchpad", label: '发射日历区配置' },
       ],
     }
   }

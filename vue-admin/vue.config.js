@@ -43,6 +43,10 @@ module.exports = {
         target: "http://54.169.232.16:8888",
         changeOrigin: true,
       },
+      "^/oss": {
+        target: "http://54.169.232.16:8090",
+        changeOrigin: true,
+      },
     },
   },
   configureWebpack: (config) => {

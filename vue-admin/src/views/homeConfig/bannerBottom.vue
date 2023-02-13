@@ -42,9 +42,9 @@
           <el-input v-model="form.contract" placeholder="请输入合约地址" />
         </el-form-item>
         <el-form-item label="图片" prop="image">
-          <el-upload class="avatar-uploader" :action="uploadAction" accept="image/jpg, image/jpeg, image/png, image/gif"
-            :show-file-list="false" :on-success="uploadSuccess" :before-upload="beforeUpload">
-            <img v-if="form.image" :src="STATIC_URL+form.image" class="avatar">
+          <el-upload class="avatar-uploader" :action="OSS_URL" accept="image/jpg, image/jpeg, image/png, image/gif" :show-file-list="false"
+            :data="OSS_PARAM" :on-success="uploadSuccess" :before-upload="oss_beforeUpload">
+            <img v-if="form.image" :src="form.image" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -121,13 +121,8 @@ export default {
   },
   methods: {
     uploadSuccess (res) {
-      this.successUploadHandle()
-      if (res.errno === 0) {
-        this.form.image = this.IMG_URL + res.data.url;
-        this.$modal.msgSuccess('上传成功')
-      } else {
-        this.$modal.msgError(res.msg || "上传失败!");
-      }
+      this.oss_uploadSuccess();
+      this.form.image = this.OSS_IMAGE_URL
     },
     /** 查询岗位列表 */
     getList () {

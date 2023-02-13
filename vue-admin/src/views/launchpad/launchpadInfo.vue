@@ -121,8 +121,9 @@
             <el-row :gutter="40">
               <el-col :span="12">
                 <el-form-item label="背景图" prop="bannerImage">
-                  <el-upload class="avatar-uploader" :action="uploadAction" accept="image/jpg, image/jpeg, image/png, image/gif"
-                    :show-file-list="false" :on-success="(res)=>uploadSuccessCoustom(res,'bannerImage')" :before-upload="beforeUpload">
+                  <el-upload class="avatar-uploader" :action="OSS_URL" accept="image/jpg, image/jpeg, image/png, image/gif"
+                    :show-file-list="false" :data="OSS_PARAM" :on-success="(res)=>uploadSuccessCoustom(res,'bannerImage')"
+                    :before-upload="oss_beforeUpload">
                     <img v-if="formData.bannerImage" :src="formData.bannerImage" class="bannerImage" />
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                   </el-upload>
@@ -130,10 +131,11 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="合集头像" prop="image">
-                  <el-upload class="avatar-uploader" :action="uploadAction" accept="image/jpg, image/jpeg, image/png, image/gif"
-                    :show-file-list="false" :on-success="(res)=>uploadSuccessCoustom(res,'image')" :before-upload="beforeUpload">
+                  <el-upload class="avatar-uploader" :action="OSS_URL" accept="image/jpg, image/jpeg, image/png, image/gif"
+                    :show-file-list="false" :data="OSS_PARAM" :on-success="(res)=>uploadSuccessCoustom(res,'image')"
+                    :before-upload="oss_beforeUpload">
                     <img v-if="formData.image" :src="formData.image" class="image" />
-                    <i v-else class="el-icon-plus avatar-uploader-icon image"></i>
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                   </el-upload>
                 </el-form-item>
               </el-col>
@@ -187,9 +189,9 @@
                 <el-button type="danger" size="mini" @click="bannerList.splice(index, 1)" plain>删除</el-button>
               </div>
             </div>
-            <el-upload :action="uploadAction" accept="image/jpg, image/jpeg, image/png, image/gif" :show-file-list="false"
-              :on-success="(res)=>uploadSuccessCoustom(res,'BannerList')" :before-upload="beforeUpload">
-              <i class="el-icon-plus banner-upload-icon"></i>
+            <el-upload :action="OSS_URL" accept="image/jpg, image/jpeg, image/png, image/gif" :show-file-list="false" :data="OSS_PARAM"
+              :on-success="(res)=>uploadSuccessCoustom(res,'BannerList')" :before-upload="oss_beforeUpload">
+              <i class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </div>
         </el-tab-pane>
@@ -197,9 +199,9 @@
           <el-tabs type="border-card" style="width:800px">
             <el-tab-pane label="项目亮点">
               <el-button type="primary" plain size="mini" @click="insertItem(introduceList,'text')" icon="el-icon-tickets">添加文本</el-button>
-              <el-upload style="display:inline-block" class="ml20" :action="uploadAction"
-                accept="image/jpg, image/jpeg, image/png, image/gif" :show-file-list="false"
-                :on-success="(res)=>uploadSuccessCoustom(res,'introduce')" :before-upload="beforeUpload">
+              <el-upload style="display:inline-block" class="ml20" :action="OSS_URL" accept="image/jpg, image/jpeg, image/png, image/gif"
+                :show-file-list="false" :data="OSS_PARAM" :on-success="(res)=>uploadSuccessCoustom(res,'introduce')"
+                :before-upload="oss_beforeUpload">
                 <el-button type="primary" plain size="mini" icon="el-icon-picture-outline">添加图片</el-button>
               </el-upload>
               <div class="content-list mt10">
@@ -215,9 +217,9 @@
             </el-tab-pane>
             <el-tab-pane label="团队">
               <el-button type="primary" plain size="mini" @click="insertItem(teamIntroList,'text')" icon="el-icon-tickets">添加文本</el-button>
-              <el-upload style="display:inline-block" class="ml20" :action="uploadAction"
-                accept="image/jpg, image/jpeg, image/png, image/gif" :show-file-list="false"
-                :on-success="(res)=>uploadSuccessCoustom(res,'teamIntro')" :before-upload="beforeUpload">
+              <el-upload style="display:inline-block" class="ml20" :action="OSS_URL" accept="image/jpg, image/jpeg, image/png, image/gif"
+                :show-file-list="false" :data="OSS_PARAM" :on-success="(res)=>uploadSuccessCoustom(res,'teamIntro')"
+                :before-upload="oss_beforeUpload">
                 <el-button type="primary" plain size="mini" icon="el-icon-picture-outline">添加图片</el-button>
               </el-upload>
               <div class="content-list mt10">
@@ -233,9 +235,9 @@
             </el-tab-pane>
             <el-tab-pane label="线路图">
               <el-button type="primary" plain size="mini" @click="insertItem(roadmapList,'text')" icon="el-icon-tickets">添加文本</el-button>
-              <el-upload style="display:inline-block" class="ml20" :action="uploadAction"
-                accept="image/jpg, image/jpeg, image/png, image/gif" :show-file-list="false"
-                :on-success="(res)=>uploadSuccessCoustom(res,'roadmap')" :before-upload="beforeUpload">
+              <el-upload style="display:inline-block" class="ml20" :action="OSS_URL" accept="image/jpg, image/jpeg, image/png, image/gif"
+                :show-file-list="false" :data="OSS_PARAM" :on-success="(res)=>uploadSuccessCoustom(res,'roadmap')"
+                :before-upload="oss_beforeUpload">
                 <el-button type="primary" plain size="mini" icon="el-icon-picture-outline">添加图片</el-button>
               </el-upload>
               <div class="content-list mt10">
@@ -334,42 +336,29 @@ export default {
     this.init()
   },
   methods: {
-    uploadSuccess (res) {
-      this.successUploadHandle();
-      if (res.errno === 0) {
-        this.formData.bannerImage = this.IMG_URL + res.data.url;
-        this.$modal.msgSuccess("上传成功");
-      } else {
-        this.$modal.msgError(res.msg || "上传失败!");
-      }
-    },
     uploadSuccessCoustom (res, type) {
-      this.successUploadHandle();
-      if (res.errno === 0) {
-        switch (type) {
-          case "introduce":
-            this.insertItem(this.introduceList, 'image', this.IMG_URL + res.data.url)
-            break;
-          case "teamIntro":
-            this.insertItem(this.teamIntroList, 'image', this.IMG_URL + res.data.url)
-            break;
-          case "roadmap":
-            this.insertItem(this.roadmapList, 'image', this.IMG_URL + res.data.url)
-            break;
-          case "BannerList":
-            this.bannerList.push(this.IMG_URL + res.data.url)
-            break;
-          case "image":
-            this.formData.image = this.IMG_URL + res.data.url
-            break;
-          case "bannerImage":
-            this.formData.bannerImage = this.IMG_URL + res.data.url;
-            break;
-        }
-        this.$modal.msgSuccess("上传成功");
-      } else {
-        this.$modal.msgError(res.msg || "上传失败!");
+      this.oss_uploadSuccess();
+      switch (type) {
+        case "introduce":
+          this.insertItem(this.introduceList, 'image', this.OSS_IMAGE_URL)
+          break;
+        case "teamIntro":
+          this.insertItem(this.teamIntroList, 'image', this.OSS_IMAGE_URL)
+          break;
+        case "roadmap":
+          this.insertItem(this.roadmapList, 'image', this.OSS_IMAGE_URL)
+          break;
+        case "BannerList":
+          this.bannerList.push(this.OSS_IMAGE_URL)
+          break;
+        case "image":
+          this.formData.image = this.OSS_IMAGE_URL
+          break;
+        case "bannerImage":
+          this.formData.bannerImage = this.OSS_IMAGE_URL;
+          break;
       }
+      this.$modal.msgSuccess("上传成功");
     },
     insertItem (list, type, content = '') {
       list.push({ type, content })
