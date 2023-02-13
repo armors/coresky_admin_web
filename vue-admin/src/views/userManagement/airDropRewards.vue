@@ -11,8 +11,8 @@
           <div class="page-wrap-content">
             <el-row :gutter="60">
               <el-col :span="24" :xs="24">
-                <el-form-item label="用户地址" prop="ids">
-                  <el-input type="textarea" :autosize="{ minRows: 10, maxRows: 20 }" placeholder="请输入内容" v-model="form.ids">
+                <el-form-item label="用户地址" prop="address">
+                  <el-input type="textarea" :autosize="{ minRows: 10, maxRows: 20 }" placeholder="请输入内容" v-model="form.address">
                   </el-input>
                 </el-form-item>
               </el-col>
@@ -57,12 +57,12 @@ export default {
       loading: false,
       codeUrl: "",
       form: {
-        ids: '',
+        address: '',
         amount: '',
         code: '',
       },
       rules: {
-        ids: [{ required: true, message: "发放用户不能为空", trigger: "blur" }],
+        address: [{ required: true, message: "发放用户不能为空", trigger: "blur" }],
         amount: [{ required: true, message: "彩票数量不能为空", trigger: "blur" }],
         code: [{ required: true, message: "验证吗不能为空", trigger: "blur" }],
       }
@@ -79,7 +79,7 @@ export default {
       this.$refs.basicInfoForm.validate().then(val => {
         if (!val) return
         let data = {
-          ids: this.form.ids.split('\n').filter(el => el !== '').join(','),
+          address: this.form.address.split('\n').filter(el => el !== '').join(','),
           amount: this.form.amount,
           code: this.form.code
         }
@@ -87,7 +87,7 @@ export default {
           this.$modal.msgSuccess("操作成功");
           this.form.code = ''
           this.form.amount = ''
-          this.form.ids = ''
+          this.form.address = ''
           this.getCode()
         })
       })

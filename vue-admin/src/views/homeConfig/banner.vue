@@ -51,6 +51,7 @@
             <img v-if="form.image" :src="STATIC_URL + form.image" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
+          <div style="font-size:12px;color: #878080;">*支持PNG、JPG、GIF等文件 推荐尺寸：400*274 推荐大小：&lt;1M</div>
         </el-form-item>
         <el-form-item label="是否启用" prop="useMark">
           <el-switch :active-value="1" :inactive-value="0" v-model="form.enable">
