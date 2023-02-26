@@ -31,7 +31,7 @@ const permission = {
   },
   actions: {
     // 生成路由
-    GenerateRoutes({ commit }, data) {
+    GenerateRoutes ({ commit }, data) {
       return new Promise((resolve) => {
         const asyncRoutes = filterDynamicRoutes(_asyncRouterMap);
         asyncRoutes.push({ path: "*", redirect: "/404", hidden: true });
@@ -46,7 +46,7 @@ const permission = {
   },
 };
 
-function hasPermission(perms, route) {
+function hasPermission (perms, route) {
   if (route.meta && route.meta.perms) {
     return perms.some((perm) => route.meta.perms.includes(perm));
   } else {
@@ -55,7 +55,7 @@ function hasPermission(perms, route) {
 }
 
 // 遍历后台传来的路由字符串，转换为组件对象
-function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
+function filterAsyncRouter (asyncRouterMap, lastRouter = false, type = false) {
   return asyncRouterMap.filter((route) => {
     if (type && route.children) {
       route.children = filterChildren(route.children);
@@ -83,7 +83,7 @@ function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
   });
 }
 
-function filterChildren(childrenMap, lastRouter = false) {
+function filterChildren (childrenMap, lastRouter = false) {
   var children = [];
   childrenMap.forEach((el, index) => {
     if (el.children && el.children.length) {
@@ -108,7 +108,7 @@ function filterChildren(childrenMap, lastRouter = false) {
 }
 
 // 动态路由遍历，验证是否具备权限
-export function filterDynamicRoutes(routes) {
+export function filterDynamicRoutes (routes) {
   const res = [];
   routes.forEach((route) => {
     if (route.permissions) {
@@ -131,13 +131,24 @@ export function filterDynamicRoutes(routes) {
       let childList = [];
       if (route.children && route.children.length > 0) {
         childList = filterDynamicRoutes(route.children);
+        route.children = childList;
+        if (route.children.length === 0) {
+          delete route["children"];
+          delete route["redirect"];
+        }
+        else {
+          res.push(route);
+        }
       }
-      route.children = childList;
-      if (route.children.length === 0) {
-        delete route["children"];
-        delete route["redirect"];
+      else {
+        res.push(route);
       }
-      res.push(route);
+      // route.children = childList;
+      // if (route.children.length === 0) {
+      //   delete route["children"];
+      //   delete route["redirect"];
+      // }
+      // res.push(route);
     } else if (route.roles) {
       if (auth.hasRoleOr(route.roles)) {
         res.push(route);

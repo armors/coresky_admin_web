@@ -11,6 +11,7 @@ export default [
         path: "index",
         component: () => import("@/views/homeConfig/index"),
         name: "homeConfigIndex",
+        permissions: ['POST /admin/adv/list'],
         meta: {
           title: "router.homeConfig",
           noCache: true,
@@ -29,6 +30,7 @@ export default [
         path: "userData",
         component: () => import("@/views/userManagement/userData"),
         name: "userData",
+        permissions: ['POST /admin/user/list'],
         meta: {
           title: "router.userManagement",
           noCache: true,
@@ -38,6 +40,7 @@ export default [
         path: "airDropScore",
         component: () => import("@/views/userManagement/airDropScore"),
         name: "airDropScore",
+        permissions: ['POST /admin/user/airDrop'],
         meta: {
           title: "积分发放",
           noCache: true,
@@ -47,6 +50,7 @@ export default [
         path: "airDropRewards",
         component: () => import("@/views/userManagement/airDropRewards"),
         name: "airDropRewards",
+        permissions: ['POST /admin/user/airDropRewards'],
         meta: {
           title: "彩票发放",
           noCache: true,
@@ -57,11 +61,13 @@ export default [
   {
     path: "/category",
     component: Layout,
+    alwaysShow: false,
     meta: { title: "router.sortManagement", icon: "table" },
     children: [
       {
         path: "category",
         component: () => import("@/views/category/list"),
+        permissions: ['POST /admin/category/list'],
         name: "category",
         meta: {
           noCache: true,
@@ -78,6 +84,7 @@ export default [
       {
         path: "contract",
         component: () => import("@/views/contract/list"),
+        permissions: ['POST /admin/contract/list'],
         name: "contract",
         meta: {
           noCache: true,
@@ -99,6 +106,7 @@ export default [
       {
         path: "/list",
         component: () => import("@/views/nft/list"),
+        permissions: ['POST /admin/nft/list'],
         name: "nftList",
         meta: {
           title: "router.nftManagement",
@@ -139,6 +147,7 @@ export default [
   {
     path: "/launchpad",
     component: Layout,
+    permissions: ['POST /admin/launchpad/list'],
     meta: {
       title: "launchpad管理",
       icon: "table",
@@ -175,6 +184,7 @@ export default [
         path: "rewardList",
         component: () => import("@/views/rewardRule/rewardList"),
         name: "rewardList",
+        permissions: ['POST /admin/reward/list'],
         meta: {
           title: "奖励分类管理",
           noCache: true,
@@ -196,6 +206,7 @@ export default [
         path: "admin",
         component: () => import("@/views/sys/admin"),
         name: "admin",
+        permissions: ['POST /admin/adminuser/list'],
         meta: {
           title: "router.administratorManagement",
           noCache: true,
@@ -205,6 +216,7 @@ export default [
         path: "log",
         component: () => import("@/views/sys/log"),
         name: "log",
+        permissions: ['POST /admin/log/list'],
         meta: {
           title: "router.operationLog",
           noCache: true,
@@ -213,6 +225,7 @@ export default [
       {
         path: "role",
         component: () => import("@/views/sys/role"),
+        permissions: ['POST /admin/role/list'],
         name: "role",
         meta: {
           title: "router.roleManagement",
@@ -252,18 +265,4 @@ export default [
     ],
     hidden: true,
   },
-
-  // {
-  //   path: "/analysis",
-  //   component: Layout,
-  //   meta: { title: "数据分析", icon: "table" },
-  //   children: [
-  //     {
-  //       path: "talentAnalysis",
-  //       component: () => import("@/views/test/index"),
-  //       name: "talentAnalysis",
-  //       meta: { title: "数据分析", noCache: true },
-  //     },
-  //   ],
-  // },
 ];

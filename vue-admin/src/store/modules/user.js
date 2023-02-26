@@ -52,6 +52,10 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
+      commit("SET_TOKEN", "");
+      commit("SET_ROLES", []);
+      commit("SET_PERMISSIONS", []);
+      removeToken();
       const username = userInfo.username.trim();
       const password = userInfo.password;
       const code = userInfo.code;
