@@ -193,6 +193,22 @@ export default [
     ],
   },
   {
+    path: "/miningPool",
+    component: Layout,
+    meta: { title: "矿池管理", icon: "table" },
+    children: [
+      {
+        path: "miningPoolList",
+        component: () => import("@/views/miningPool/miningPoolList"),
+        name: "miningPoolList",
+        meta: {
+          title: "矿池管理管理",
+          noCache: true,
+        },
+      }
+    ],
+  },
+  {
     path: "/sys",
     component: Layout,
     redirect: "noredirect",

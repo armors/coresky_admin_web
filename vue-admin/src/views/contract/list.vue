@@ -7,10 +7,13 @@
       </el-col>
     </el-row>
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('global.loadingText')" border highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('global.loadingText')" border
+      highlight-current-row>
       <el-table-column align="center" label="Id" prop="id" width="70" />
-      <el-table-column align="center" :label="$t('contract.name')" prop="name" :show-overflow-tooltip="true" width="100" />
-      <el-table-column align="center" :label="$t('contract.symbol')" prop="symbol" :show-overflow-tooltip="true" width="100" />
+      <el-table-column align="center" :label="$t('contract.name')" prop="name" :show-overflow-tooltip="true"
+        width="100" />
+      <el-table-column align="center" :label="$t('contract.symbol')" prop="symbol" :show-overflow-tooltip="true"
+        width="100" />
       <el-table-column align="center" :label="$t('contract.image')" prop="image" width="120">
         <template #default="scope">
           <media v-if="scope.row.image" :url="scope.row.image" type="image" :isPreview="true"></media>
@@ -20,7 +23,8 @@
       <el-table-column align="center" :label="$t('contract.owner')" prop="owner" />
       <el-table-column align="center" :label="$t('global.operation')" width="120" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)" v-permission="['POST /admin/contract/update']">
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)"
+            v-permission="['POST /admin/contract/update']">
             {{ $t("global.edit") }}</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)" v-if="!scope.row.deleted"
             v-permission="['POST /admin/contract/delete']">{{ $t("global.delete") }}</el-button>
@@ -28,7 +32,8 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
+      @pagination="getList" />
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="900px" append-to-body>
       <el-form ref="dataForm" :rules="rules" :model="dataForm" label-width="120px" style="margin-right: 40px">
@@ -50,7 +55,8 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('contract.contractType')">
-          <el-select v-model="dataForm.contractType" class="filter-item w-200 mr-10" :placeholder="$t('contract.contractType')">
+          <el-select v-model="dataForm.contractType" class="filter-item w-200 mr-10"
+            :placeholder="$t('contract.contractType')">
             <el-option v-for="item in contractType" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -67,15 +73,15 @@
           <!-- <upload-unit v-if="dialogFormVisible" :refName="'contractRef'" :limitNum="1" :imageData="dataForm.bannerImage"
             :uploadStatus="dialogStatus == 'create' || dialogStatus == 'update'" @updateData="updateCover">
           </upload-unit> -->
-          <el-upload class="avatar-uploader" :action="OSS_URL" accept="image/jpg, image/jpeg, image/png, image/gif" :show-file-list="false"
-            :data="OSS_PARAM" :on-success="uploadSuccess" :before-upload="oss_beforeUpload">
+          <el-upload class="avatar-uploader" :action="OSS_URL" accept="image/jpg, image/jpeg, image/png, image/gif"
+            :show-file-list="false" :data="OSS_PARAM" :on-success="uploadSuccess" :before-upload="oss_beforeUpload">
             <img v-if="dataForm.bannerImage" :src="dataForm.bannerImage" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <div style="font-size:12px;color: #878080;">*支持PNG、JPG、GIF等文件 推荐尺寸：1920*320 推荐大小：&lt;1M</div>
         </el-form-item>
         <el-form-item :label="$t('contract.feeContract')" prop="feeContract">
-          <el-input v-model="dataForm.feeContract" />d
+          <el-input v-model="dataForm.feeContract" />
         </el-form-item>
         <el-form-item :label="$t('contract.royalty')" prop="royalty">
           <el-input v-model="dataForm.royalty" />
@@ -199,6 +205,20 @@ export default {
             trigger: "blur",
           },
         ],
+        feeContract: [
+          {
+            required: true,
+            message: '接收版税地址不能为空',
+            trigger: "blur",
+          },
+        ],
+        startHeight: [
+          {
+            required: true,
+            message: '起始高度不能为空',
+            trigger: "blur",
+          },
+        ]
       },
       textMap: {
         update: this.$t("global.edit"),
