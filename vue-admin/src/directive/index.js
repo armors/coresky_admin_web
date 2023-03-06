@@ -5,6 +5,7 @@ import dialogDragWidth from './dialog/dragWidth'
 import dialogDragHeight from './dialog/dragHeight'
 import clipboard from './module/clipboard'
 import { inputLimt } from './inputLimt'
+import { inputLimitNew } from './inputLimit'
 const install = function (Vue) {
   Vue.directive('hasRole', hasRole)
   Vue.directive('permission', hasPermi)
@@ -13,6 +14,7 @@ const install = function (Vue) {
   Vue.directive('dialogDragWidth', dialogDragWidth)
   Vue.directive('dialogDragHeight', dialogDragHeight)
   Vue.directive('inputLimit', inputLimt)
+  Vue.directive('inputLimitNew',inputLimitNew)
 }
 
 if (window.Vue) {

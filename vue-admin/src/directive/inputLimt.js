@@ -20,6 +20,7 @@ export const inputLimt = {
     target.addEventListener("input", e => {
       setTimeout(function () {
         if (flag) {
+          console.log(binding.value);
           if (binding.value == 0) {
             if (wins_0.test(e.target.value)) {
               e.target.value = e.target.value.replace(wins_0, "");
@@ -108,6 +109,7 @@ export const inputLimt = {
               } else {
                 e.target.value = e.target.value.replace(wins_0, "")
               }
+              console.log(binding.value);
               e.target.dispatchEvent(new Event("input"))
             }
           }

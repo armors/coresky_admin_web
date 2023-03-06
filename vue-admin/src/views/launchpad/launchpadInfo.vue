@@ -24,7 +24,7 @@
             <el-row :gutter="40">
               <el-col :span="12">
                 <el-form-item label="发售价格" prop="price">
-                  <el-input v-input-limit="4" placeholder="输入发售价格" v-model="formData.price" />
+                  <el-input v-input-limit-new="'17,4'" placeholder="输入发售价格" v-model="formData.price" @input.native="test($event)"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -415,6 +415,26 @@ export default {
         this.formData.endTime = dayjs.unix(this.formData.endTime).format('YYYY-MM-DD HH:mm:ss')
         this.bannerList = this.formData.imgList.split(',')
       })
+    },
+    test (e) {
+      let intStr;
+      let decimalsStr = '';
+      let ints = 17;
+      let decimals = 4;
+      e.target.value = e.target.value.replace(/[^\d.]/g, "").replace(/\.{2,}/g, ".").replace(".", "$#$")
+                      .replace(/\./g, "")
+                      .replace("$#$", ".")
+      let rxpDecimal = new RegExp("(\\.\\d{"+ decimals +"})\\d*$","g"); //小数点后最多几位数
+      let rxpInt = new RegExp("(\\d{" + ints + "})\\d*$","g"); // 最多几位整数
+      if(e.target.value.indexOf('.') <= -1){
+        intStr = e.target.value;
+      } else {
+        intStr = e.target.value.substring(0,e.target.value.indexOf('.'));
+        decimalsStr = e.target.value.substring(e.target.value.indexOf('.'),e.target.value.length); // 匹配小数点后的数字
+      }
+      intStr = intStr.replace(rxpInt,'$1');
+      decimalsStr = decimalsStr.replace(rxpDecimal, '$1');
+      e.target.value = intStr + decimalsStr;
     },
     init () {
       let id = this.$route.query.id
