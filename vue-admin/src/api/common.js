@@ -85,3 +85,11 @@ export const userAirDropRewards = (data) => request.post("/admin/user/airDropRew
 export const uploadConfig = (data) => request.get("/oss");
 
 
+
+
+
+export const miningPoolList = (data) => request.post("/admin/reward/rule/mining/pool/list", data);
+export const miningPoolCreate = (data) => request.post("/admin/reward/rule/mining/pool/create", data);
+export const miningPoolUpdate = (data) => request.post("/admin/reward/rule/mining/pool/update", data);
+export const miningPoolStartStop = (data) => request.post("/admin/reward/rule/mining/pool/start/stop", data);
+export const miningPoolBindingAll = (data) => request.post("/admin/reward/rule/mining/pool/one/binding", data);

@@ -10,12 +10,26 @@
     <el-table v-loading="listLoading" size="small" :data="list" :element-loading-text="$t('sortManagement.loadingText')"
       border fit highlight-current-row>
       <el-table-column label="序号" align="center" type="index" width="70" />
-      <el-table-column align="center" label="规则名称" prop="name" />
-      <el-table-column align="center" label="状态" prop="listReward" />
-      <el-table-column align="center" label="矿池总量" prop="buyReward" />
-      <el-table-column align="center" label="剩余矿池量" prop="sellReward" />
-      <el-table-column align="center" label="有效期开始时间" prop="listReward" />
-      <el-table-column align="center" label="有效期结束时间" prop="buyReward" />
+      <el-table-column align="center" label="规则名称" prop="ruleName" />
+      <el-table-column align="center" label="状态" prop="ruleStateName">
+        <template #default="scope">
+          <el-switch :active-value="1" :inactive-value="0" @change="(val) => statusChange(val, scope.$index)"
+            v-model="scope.row.ruleState">
+          </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="矿池总量" prop="totalReward" />
+      <el-table-column align="center" label="剩余矿池量" prop="leftReward" />
+      <el-table-column align="center" label="有效期开始时间" prop="listReward">
+        <template #default="scope">
+          {{ dateParse(scope.row.expireTimeStart) }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="有效期结束时间" prop="buyReward">
+        <template #default="scope">
+          {{ dateParse(scope.row.expireTimeEnd) }}
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="挂单奖励" prop="listReward" />
       <el-table-column align="center" label="购买奖励" prop="buyReward" />
       <el-table-column align="center" label="出售奖励" prop="sellReward">
@@ -24,8 +38,8 @@
         <template #default="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">
             编辑</el-button>
-          <!-- <el-button type="danger" size="mini" @click="handleDelete(scope.row)">
-            删除</el-button> -->
+          <!-- <el-button type="primary" size="mini" @click="handleAll(scope.row)">
+            一键配置</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -34,31 +48,29 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" size="small" :visible.sync="dialogFormVisible" width="600px" append-to-body>
       <el-form ref="dataFormRef" :rules="rules" :model="dataForm" label-width="100px" style="margin-right:30px">
-        <el-form-item label="规则名称" prop="name">
-          <el-input v-model="dataForm.name" />
+        <el-form-item label="规则名称" prop="ruleName">
+          <el-input v-model="dataForm.ruleName" />
         </el-form-item>
-        <el-form-item label="是否启用" prop="useMark">
-          <el-switch :active-value="1" :inactive-value="0" v-model="dataForm.enable">
+        <el-form-item label="是否启用" prop="ruleState">
+          <el-switch :active-value="1" :inactive-value="0" v-model="dataForm.ruleState">
           </el-switch>
         </el-form-item>
-        <el-form-item label="矿池总量" prop="name">
-          <el-input v-model="dataForm.name" />
+        <el-form-item label="矿池总量" prop="totalReward">
+          <el-input v-model="dataForm.totalReward" />
         </el-form-item>
-        <el-form-item label="有效期">
+        <el-form-item label="有效期" prop="expireTimeStart">
           <el-date-picker style="width: 100%;" @change="dateChange()" value-format="yyyy-MM-dd HH:mm:ss"
             v-model="myDatetime" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="挂单奖励" prop="list_reward">
-          <el-input-number size="medium" v-model="dataForm.list_reward" :controls="false"></el-input-number>
+        <el-form-item label="挂单奖励" prop="listReward">
+          <el-input v-input-limit="4" placeholder="" v-model="dataForm.listReward" />
         </el-form-item>
-        <el-form-item label="购买奖励" prop="buy_reward">
-          <el-input-number size="medium" v-model="dataForm.buy_reward" :controls="false"></el-input-number>
-
+        <el-form-item label="购买奖励" prop="buyReward">
+          <el-input v-input-limit="4" placeholder="" v-model="dataForm.buyReward" />
         </el-form-item>
-        <el-form-item label="出售奖励" prop="sell_reward">
-          <el-input-number size="medium" v-model="dataForm.sell_reward" :controls="false"></el-input-number>
-
+        <el-form-item label="出售奖励" prop="sellReward">
+          <el-input v-input-limit="4" placeholder="" v-model="dataForm.sellReward" />
         </el-form-item>
       </el-form>
       <template #footer class="dialog-footer">
@@ -78,7 +90,8 @@
 </template>
 
 <script>
-import { rewardList, rewardCreate, rewardUpdate } from '@/api/common'
+import { miningPoolList, miningPoolCreate, miningPoolUpdate, miningPoolStartStop, miningPoolBindingAll } from '@/api/common'
+import dayjs from 'dayjs'
 export default {
   name: 'miningPoolList',
   components: {},
@@ -95,16 +108,25 @@ export default {
       dialogStatus: "",
       dataForm: {
         id: '',
-        name: '',
-        list_reward: '',
-        buy_reward: '',
-        sell_reward: ''
+        ruleName: '',
+        ruleState: 1,
+        expireTimeStart: '',
+        expireTimeEnd: '',
+        totalReward: '',
+        listReward: '',
+        buyReward: '',
+        sellReward: '',
       },
       rules: {
-        name: [{ required: true, message: '规则名称不能为空', trigger: "blur", },],
-        list_reward: [{ required: true, message: '挂单奖励积分不能为空', trigger: "blur", },],
-        buy_reward: [{ required: true, message: '购买奖励积分不能为空', trigger: "blur", },],
-        sell_reward: [{ required: true, message: '出售奖励积分不能为空', trigger: "blur", },],
+        ruleName: [{ required: true, message: '规则名称不能为空', trigger: "blur", },],
+        // expireTimeStart: [{ required: true, message: '有效期不能为空', trigger: "change", },],
+        totalReward: [{ required: true, message: '矿池总量不能为空', trigger: "blur", },],
+        listReward: [{ required: true, message: '挂单奖励积分不能为空', trigger: "blur", },],
+        buyReward: [{ required: true, message: '购买奖励积分不能为空', trigger: "blur", },],
+        sellReward: [{ required: true, message: '出售奖励积分不能为空', trigger: "blur", },],
+        expireTimeStart: [
+          { required: true, validator: this.expireTimeValue, trigger: 'change' }
+        ],
       },
       textMap: {
         update: this.$t("sortManagement.edit"),
@@ -120,15 +142,43 @@ export default {
     this.handleQuery();
   },
   methods: {
+    statusChange (val, index) {
+      let obj = this.list[index]
+      let data = {
+        id: obj.id,
+        ruleState: val
+      }
+      miningPoolStartStop(data).then(res => {
+        this.$notify.success({
+          title: '操作成功',
+          // message: this.$t("sortManagement.createSuccess"),
+        });
+        this.getList()
+      })
+    },
+    dateParse (time) {
+      return dayjs.unix(time).format('YYYY-MM-DD HH:mm:ss')
+    },
+    expireTimeValue (rule, value, callback) {
+      if (this.dataForm.expireTimeStart === null || this.dataForm.expireTimeStart === '') {
+        callback(new Error('时间范围不能为空'));
+        return
+      }
+      callback();
+    },
     dateChange () {
       if (this.myDatetime != null) {
-        this.dataForm.startTime = dayjs(this.myDatetime[0]).unix()
-        this.dataForm.endTime = dayjs(this.myDatetime[1]).unix()
+        this.dataForm.expireTimeStart = dayjs(this.myDatetime[0]).unix()
+        this.dataForm.expireTimeEnd = dayjs(this.myDatetime[1]).unix()
       }
       else {
-        this.dataForm.startTime = ''
-        this.dataForm.endTime = ''
+        this.dataForm.expireTimeStart = ''
+        this.dataForm.expireTimeEnd = ''
       }
+      console.log(this.dataForm)
+      this.$refs.dataFormRef.validateField('expireTimeStart', (err) => {
+        console.log(222, err)
+      })
     },
     handleQuery () {
       this.queryParams.page = 1
@@ -136,7 +186,7 @@ export default {
     },
     getList () {
       this.listLoading = true;
-      rewardList(this.queryParams)
+      miningPoolList(this.queryParams)
         .then((res) => {
           this.list = res.data.list;
           this.total = res.data.total;
@@ -155,10 +205,14 @@ export default {
     resetForm () {
       this.dataForm = {
         id: '',
-        name: '',
-        list_reward: '',
-        buy_reward: '',
-        sell_reward: ''
+        ruleName: '',
+        ruleState: 0,
+        expireTimeStart: '',
+        expireTimeEnd: '',
+        totalReward: '',
+        listReward: '',
+        buyReward: '',
+        sellReward: '',
       };
     },
     handleCreate () {
@@ -172,18 +226,18 @@ export default {
     createData () {
       this.$refs["dataFormRef"].validate((valid) => {
         if (valid) {
-          rewardCreate(this.dataForm)
+          miningPoolCreate(this.dataForm)
             .then((response) => {
               this.dialogFormVisible = false;
               this.$notify.success({
-                title: this.$t("sortManagement.success"),
-                message: this.$t("sortManagement.createSuccess"),
+                title: '操作成功',
+                // message: this.$t("sortManagement.createSuccess"),
               });
               this.handleQuery();
             })
             .catch((response) => {
               this.$notify.error({
-                title: this.$t("sortManagement.fail"),
+                title: '操作异常',
                 message: this.$t("response." + response.data.errno),
               });
             });
@@ -193,12 +247,28 @@ export default {
     handleUpdate (row) {
       this.dataForm = Object.assign({}, row);
       this.dataForm.id = row.id
-      this.dataForm.name = row.name
-      this.dataForm.list_reward = row.listReward
-      this.dataForm.sell_reward = row.sellReward
-      this.dataForm.buy_reward = row.buyReward
+      this.dataForm.ruleName = row.ruleName
+      this.dataForm.ruleState = row.ruleState
+      this.dataForm.expireTimeStart = row.expireTimeStart
+      this.dataForm.expireTimeEnd = row.expireTimeEnd
+
+      if (!!this.dataForm.expireTimeStart && !!this.dataForm.expireTimeEnd) {
+        this.myDatetime = [
+          dayjs.unix(this.dataForm.expireTimeStart).format('YYYY-MM-DD HH:mm:ss'),
+          dayjs.unix(this.dataForm.expireTimeEnd).format('YYYY-MM-DD HH:mm:ss'),
+        ]
+      }
+      else {
+        this.myDatetime = null
+      }
+
+      this.dataForm.totalReward = row.totalReward
+      this.dataForm.listReward = row.listReward
+      this.dataForm.buyReward = row.buyReward
+      this.dataForm.sellReward = row.sellReward
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
+
       this.$nextTick(() => {
         this.$refs["dataFormRef"].clearValidate();
       });
@@ -206,29 +276,29 @@ export default {
     updateData () {
       this.$refs["dataFormRef"].validate((valid) => {
         if (valid) {
-          rewardUpdate(this.dataForm)
+          miningPoolUpdate(this.dataForm)
             .then(() => {
               this.dialogFormVisible = false;
               this.$notify.success({
-                title: this.$t("sortManagement.success"),
-                message: this.$t("sortManagement.editSuccess"),
+                title: '操作成功',
+                // message: this.$t("sortManagement.editSuccess"),
               });
               this.handleQuery();
             })
             .catch((response) => {
               this.$notify.error({
-                title: this.$t("sortManagement.fail"),
+                title: '操作异常',
                 message: this.$t("response." + response.data.errno),
               });
             });
         }
       });
     },
-    handleDelete (row) {
+    handleAll (row) {
       this.$modal
-        .confirm("是否确认删除？")
+        .confirm("是否一键配置所有合集？")
         .then(function () {
-          return launchpadRemoveTokens({ lpId: row.id });
+          return miningPoolBindingAll({ id: row.id });
         })
         .then(() => {
           this.getList();
